@@ -5,6 +5,7 @@ import { getIsFreAdListing, settingsData } from "@/redux/reducer/settingSlice";
 import { t, truncate } from "@/utils";
 import CustomLink from "@/components/Common/CustomLink";
 import { useSelector } from "react-redux";
+import { FiHeart, FiMessageSquare, FiTarget } from "react-icons/fi"; 
 import { GrLocation } from "react-icons/gr";
 import { getCityData } from "@/redux/reducer/locationSlice";
 import HomeMobileMenu from "./HomeMobileMenu.jsx";
@@ -33,7 +34,7 @@ import { deleteUserApi, getLimitsApi, logoutApi } from "@/utils/api.js";
 import { useMediaQuery } from "usehooks-ts";
 import UnauthorizedModal from "@/components/Auth/UnauthorizedModal.jsx";
 import CustomImage from "@/components/Common/CustomImage.jsx";
-import { Loader2 } from "lucide-react";
+import { Loader2, UserCircle } from "lucide-react"; 
 import { useNavigate } from "@/components/Common/useNavigate.jsx";
 import { usePathname } from "next/navigation.js";
 import { Skeleton } from "@/components/ui/skeleton.jsx";
@@ -70,57 +71,41 @@ const HeaderCategoriesSkeleton = () => {
 };
 
 const HomeHeader = () => {
-  // 📦 Framework & Firebase
   const { navigate } = useNavigate();
   const { signOut } = FirebaseData();
   const pathname = usePathname();
 
-  // 🔌 Redux State (via useSelector)
-
-  // User & Auth
   const userData = useSelector(userSignUpData);
   const IsLoggedin = useSelector(getIsLoggedIn);
   const IsLoginOpen = useSelector(getIsLoginModalOpen);
-
-  // Ads & Categories
   const isCategoryLoading = useSelector(getIsCatLoading);
   const cateData = useSelector(CategoryData);
   const IsFreeAdListing = useSelector(getIsFreAdListing);
-
-  // Location
   const cityData = useSelector(getCityData);
-
-  // Language & Settings
-  const CurrentLanguage = useSelector(CurrentLanguageData);
   const settings = useSelector(settingsData);
 
-  // 🎛️ Local UI State (via useState)
-
-  // Modals
   const [IsRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [IsLocationModalOpen, setIsLocationModalOpen] = useState(false);
-
-  // Auth State
   const [IsLogout, setIsLogout] = useState(false);
   const [IsLoggingOut, setIsLoggingOut] = useState(false);
-
-  // Profile
   const [IsUpdatingProfile, setIsUpdatingProfile] = useState(false);
-
-  // Ad Listing
   const [IsAdListingClicked, setIsAdListingClicked] = useState(false);
-
-  // Email Status
   const [IsMailSentSuccess, setIsMailSentSuccess] = useState(false);
-
-  // 📱 Media Query
-  const isLargeScreen = useMediaQuery("(min-width: 992px)");
-
-  //delete account state
+  
   const [manageDeleteAccount, setManageDeleteAccount] = useState({
     IsDeleteAccount: false,
     IsDeleting: false,
   });
+
+  const isLargeScreen = useMediaQuery("(min-width: 992px)");
+
+  const handleProtectedAction = (action) => {
+    if (!IsLoggedin) {
+      setIsLoginOpen(true);
+      return;
+    }
+    action();
+  };
 
   const handleLogout = async () => {
     try {
@@ -133,7 +118,6 @@ const HomeHeader = () => {
         logoutSuccess();
         toast.success(t("signOutSuccess"));
         setIsLogout(false);
-        // avoid redirect if already on home page otherwise router.push triggering server side api calls
         if (pathname !== "/") {
           navigate("/");
         }
@@ -156,7 +140,6 @@ const HomeHeader = () => {
       setIsUpdatingProfile(true);
       return;
     }
-
     if (IsFreeAdListing) {
       navigate("/ad-listing");
       return;
@@ -184,8 +167,6 @@ const HomeHeader = () => {
     navigate("/profile");
   };
 
-  const locationText = cityData?.formattedAddress;
-
   const handleDeleteAcc = async () => {
     try {
       setManageDeleteAccount((prev) => ({ ...prev, IsDeleting: true }));
@@ -196,7 +177,6 @@ const HomeHeader = () => {
       logoutSuccess();
       toast.success(t("userDeleteSuccess"));
       setManageDeleteAccount((prev) => ({ ...prev, IsDeleteAccount: false }));
-      // avoid redirect if already on home page otherwise router.push triggering server side api calls
       if (pathname !== "/") {
         navigate("/");
       }
@@ -212,113 +192,127 @@ const HomeHeader = () => {
     }
   };
 
+  const locationText = cityData?.formattedAddress;
+
   return (
     <>
-      <header className="py-5 border-b">
+      <header className="py-3 border-b bg-white shadow-sm sticky top-0 z-50">
         <nav className="container">
-          <div className="space-between">
-            <CustomLink href="/">
-              <CustomImage
-                src={settings?.header_logo}
-                alt="logo"
-                width={195}
-                height={52}
-                className="w-full h-[52px] object-contain ltr:object-left rtl:object-right max-w-[195px]"
-              />
-            </CustomLink>
-            {/* desktop category search select */}
+          <div className="flex items-center justify-between gap-4">
+            
+            <div className="flex-shrink-0">
+              <CustomLink href="/">
+                <CustomImage
+                  src={settings?.header_logo}
+                  alt="logo"
+                  width={150} 
+                  height={45}
+                  className="h-[40px] w-auto object-contain"
+                />
+              </CustomLink>
+            </div>
 
             {isLargeScreen && (
-              <div className="flex items-center border leading-none rounded">
-                <Search />
+              <div className="flex-1 max-w-2xl mx-4">
+                 <div className="w-full">
+                    <Search />
+                 </div>
               </div>
             )}
 
-            <button
-              className="hidden lg:flex items-center gap-1"
-              onClick={() => setIsLocationModalOpen(true)}
-            >
-              <GrLocation
-                size={16}
-                className="flex-shrink-0"
-                title={locationText ? locationText : t("addLocation")}
-              />
-              <p
-                className="hidden xl:block text-sm"
-                title={locationText ? locationText : t("addLocation")}
-              >
-                {locationText
-                  ? truncate(locationText, 12)
-                  : truncate(t("addLocation"), 12)}
-              </p>
-            </button>
+            <div className="hidden lg:flex items-center gap-5">
+              
+              <div className="flex items-center gap-4 text-gray-600">
+                <button 
+                    title="Favoritos" 
+                    onClick={() => handleProtectedAction(() => navigate('/favorites'))} 
+                    className="hover:text-primary transition"
+                >
+                    <FiHeart size={20} />
+                </button>
+                
+                <button 
+                    title="Chat" 
+                    onClick={() => handleProtectedAction(() => navigate('/chat'))} 
+                    className="hover:text-primary transition"
+                >
+                    <FiMessageSquare size={20} />
+                </button>
+                
+                <button 
+                  onClick={() => setIsLocationModalOpen(true)}
+                  title={locationText ? locationText : t("addLocation")}
+                  className="hover:text-primary transition"
+                >
+                    <FiTarget size={22} />
+                </button>
+              </div>
 
-            <div className="hidden lg:flex items-center gap-2">
+              <button
+                className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2.5 rounded-full flex items-center gap-2 font-medium transition-colors shadow-sm"
+                disabled={IsAdListingClicked}
+                onClick={handleAdListing} 
+              >
+                {IsAdListingClicked ? (
+                  <Loader2 size={18} className="animate-spin" />
+                ) : (
+                  <IoIosAddCircleOutline size={20} />
+                )}
+                <span>Anunciar grátis</span>
+              </button>
+
               {IsLoggedin ? (
                 <ProfileDropdown
                   setIsLogout={setIsLogout}
                   IsLogout={IsLogout}
                 />
               ) : (
-                <>
-                  <button
+                <div 
+                    className="flex items-center  gap-2 cursor-pointer border border-gray-300 rounded-full p-2 pr-3 hover:shadow-md transition-all duration-200 bg-white" 
                     onClick={() => setIsLoginOpen(true)}
-                    title={t("login")}
-                  >
-                    {truncate(t("login"), 12)}
-                  </button>
-                  <span className="border-l h-6 self-center"></span>
-                  <button
-                    onClick={() => setIsRegisterModalOpen(true)}
-                    title={t("register")}
-                  >
-                    {truncate(t("register"), 12)}
-                  </button>
-                </>
+                >
+                    <UserCircle size={30} className="mr-2 text-gray-500" />
+                    <div className="flex flex-col gap-[3px]">
+                        <span className="w-4 h-[2px] bg-gray-600 rounded-full"></span>
+                        <span className="w-4 h-[2px] bg-gray-600 rounded-full"></span>
+                        <span className="w-4 h-[2px] bg-gray-600 rounded-full"></span>
+                    </div>
+                </div>
               )}
-
-              <button
-                className="bg-primary px-2 xl:px-4 py-2 items-center text-white rounded-md  flex gap-1"
-                disabled={IsAdListingClicked}
-                onClick={handleAdListing}
-                title={t("adListing")}
-              >
-                {IsAdListingClicked ? (
-                  <Loader2 size={18} className="animate-spin" />
-                ) : (
-                  <IoIosAddCircleOutline size={18} />
-                )}
-
-                <span className="hidden xl:inline">
-                  {truncate(t("adListing"), 12)}
-                </span>
-              </button>
-
-              <LanguageDropdown />
             </div>
-            <HomeMobileMenu
-              setIsLocationModalOpen={setIsLocationModalOpen}
-              setIsRegisterModalOpen={setIsRegisterModalOpen}
-              setIsLogout={setIsLogout}
-              locationText={locationText}
-              handleAdListing={handleAdListing}
-              IsAdListingClicked={IsAdListingClicked}
-              setManageDeleteAccount={setManageDeleteAccount}
-            />
+
+            {!isLargeScreen && (
+                <div className="flex items-center gap-2">
+                    <HomeMobileMenu
+                    setIsLocationModalOpen={setIsLocationModalOpen}
+                    setIsRegisterModalOpen={setIsRegisterModalOpen}
+                    setIsLogout={setIsLogout}
+                    locationText={locationText}
+                    handleAdListing={handleAdListing}
+                    IsAdListingClicked={IsAdListingClicked}
+                    setManageDeleteAccount={setManageDeleteAccount}
+                    />
+                </div>
+            )}
           </div>
 
           {!isLargeScreen && (
-            <div className="flex items-center border leading-none rounded mt-2">
+            <div className="mt-3 pb-2">
               <Search />
             </div>
           )}
         </nav>
       </header>
-      {isCategoryLoading && !cateData.length ? (
-        <HeaderCategoriesSkeleton />
-      ) : (
-        cateData &&
-        cateData.length > 0 && <HeaderCategories cateData={cateData} />
+
+      {IsLoggedin && (
+        <>
+          {isCategoryLoading && !cateData.length ? (
+            <HeaderCategoriesSkeleton />
+          ) : (
+            cateData &&
+            cateData.length > 0 && <HeaderCategories cateData={cateData} />
+          )}
+        </>
       )}
       
       <LoginModal
@@ -326,7 +320,6 @@ const HomeHeader = () => {
         IsLoginOpen={IsLoginOpen}
         setIsRegisterModalOpen={setIsRegisterModalOpen}
       />
-
       <RegisterModal
         setIsMailSentSuccess={setIsMailSentSuccess}
         IsRegisterModalOpen={IsRegisterModalOpen}
@@ -337,8 +330,6 @@ const HomeHeader = () => {
         IsMailSentSuccess={IsMailSentSuccess}
         setIsMailSentSuccess={setIsMailSentSuccess}
       />
-
-      {/* Reusable Alert Dialog for Logout */}
       <ReusableAlertDialog
         open={IsLogout}
         onCancel={() => setIsLogout(false)}
@@ -349,8 +340,6 @@ const HomeHeader = () => {
         confirmText={t("yes")}
         confirmDisabled={IsLoggingOut}
       />
-
-      {/* Reusable Alert Dialog for Updating Profile */}
       <ReusableAlertDialog
         open={IsUpdatingProfile}
         onCancel={() => setIsUpdatingProfile(false)}
@@ -359,7 +348,6 @@ const HomeHeader = () => {
         description={t("youNeedToUpdateProfile")}
         confirmText={t("yes")}
       />
-
       {!isLargeScreen && (
         <ReusableAlertDialog
           open={manageDeleteAccount?.IsDeleteAccount}

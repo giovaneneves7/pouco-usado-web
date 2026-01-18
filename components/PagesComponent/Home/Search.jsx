@@ -18,13 +18,15 @@ import {
 import { useEffect, useState } from "react";
 import { useInView } from "react-intersection-observer";
 import { t } from "@/utils";
-import { BiPlanet } from "react-icons/bi";
+// Removi o BiPlanet pois não tem na imagem
 import { FaSearch } from "react-icons/fa";
 import { usePathname } from "next/navigation";
 import { useNavigate } from "@/components/Common/useNavigate";
 import useGetCategories from "@/components/Layout/useGetCategories";
 
 const Search = () => {
+  // Mantendo a lógica de categorias caso precise reativar no futuro,
+  // mas visualmente focaremos apenas no input conforme a imagem.
   const {
     cateData,
     getCategories,
@@ -39,6 +41,8 @@ const Search = () => {
     { slug: "all-categories", translated_name: t("allCategories") },
     ...cateData,
   ];
+  
+  // O estado 'value' continua controlando a categoria (default: all-categories)
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("all-categories");
   const selectedItem = categoryList.find((item) => item.slug === value);
@@ -56,100 +60,50 @@ const Search = () => {
     e.preventDefault();
 
     const query = encodeURIComponent(searchQuery);
-
-    // Build the base URL with query and language
     const baseUrl = `/ads?query=${query}`;
-
-    // Add category parameter if not "all-categories"
+    
+    // Se a categoria estiver selecionada (mesmo que oculta), usa ela.
     const url =
       selectedItem?.slug === "all-categories"
         ? baseUrl
         : `/ads?category=${selectedItem?.slug}&query=${query}`;
 
-    // Use consistent navigation method
     if (pathname === "/ads") {
-      // If already on ads page, use history API to avoid full page reload
       window.history.pushState(null, "", url);
     } else {
-      // If on different page, use router for navigation
       navigate(url);
     }
   };
 
   return (
-    <>
-      <Popover open={open} onOpenChange={setOpen}>
-        <PopoverTrigger asChild>
-          <Button
-            variant="outline"
-            role="combobox"
-            aria-expanded={open}
-            className="min-w-[125px] max-w-[125px] sm:min-w-[156px] sm:max-w-[156px] py-1 px-1.5 sm:py-2 sm:px-3 justify-between border-none hover:bg-transparent font-normal"
-          >
-            <span className="truncate">
-              {selectedItem?.translated_name || t("selectCat")}
-            </span>
-            <ChevronsUpDown className="opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent align="start" className="w-[200px] p-0">
-          <Command>
-            <CommandInput placeholder={t("searchACategory")} />
-            <CommandList>
-              <CommandEmpty>{t("noCategoryFound")}</CommandEmpty>
-              <CommandGroup>
-                {categoryList.map((category, index) => {
-                  const isLast = open && index === categoryList.length - 1;
-                  return (
-                    <CommandItem
-                      key={category?.slug}
-                      value={category?.slug}
-                      onSelect={(currentValue) => {
-                        setValue(currentValue);
-                        setOpen(false);
-                      }}
-                      ref={isLast ? ref : null}
-                    >
-                      {category.translated_name || category?.name}
-                      <Check
-                        className={cn(
-                          "ml-auto",
-                          value === category.slug ? "opacity-100" : "opacity-0"
-                        )}
-                      />
-                    </CommandItem>
-                  );
-                })}
-              </CommandGroup>
-              {isCatLoadMore && (
-                <div className="flex justify-center items-center pb-2 text-muted-foreground">
-                  <Loader2 className="animate-spin" />
-                </div>
-              )}
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+    <div className="w-full relative">
+      {/* O Dropdown de categorias (Popover) foi ocultado aqui para corresponder 
+         exatamente ao design da imagem enviada. Se quiser que o usuário possa 
+         filtrar categorias, você pode reintroduzi-lo ou colocá-lo em outro lugar.
+      */}
+
       <form
         onSubmit={handleSearchNav}
-        className="w-full flex items-center gap-2 ltr:border-l rtl:border-r py-1 px-1.5 sm:py-2 sm:px-3"
+        className="w-full flex items-center bg-gray-100 rounded-full pl-5 pr-1.5 py-1.5 transition-all focus-within:ring-1 focus-within:ring-gray-300"
       >
-        <BiPlanet color="#595B6C" className="min-w-4 min-h-4" />
+        {/* Input Transparente */}
         <input
           type="text"
-          placeholder={t("searchAd")}
-          className="text-sm outline-none w-full"
+          placeholder="Busca por algo..." 
+          className="flex-1 bg-transparent border-none outline-none text-gray-700 placeholder:text-gray-400 text-sm h-full"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
+
+        {/* Botão de Busca Circular e Escuro */}
         <button
-          className="flex items-center gap-2 bg-primary text-white p-2 rounded"
+          className="flex items-center justify-center bg-slate-600 hover:bg-slate-700 text-white w-9 h-9 rounded-full transition-colors flex-shrink-0 ml-2 shadow-sm"
           type="submit"
         >
           <FaSearch size={14} />
         </button>
       </form>
-    </>
+    </div>
   );
 };
 

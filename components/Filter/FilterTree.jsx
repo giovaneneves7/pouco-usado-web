@@ -1,9 +1,8 @@
 import { cn } from "@/lib/utils";
-import { Loader2, Minus, Plus } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { usePathname, useSearchParams } from "next/navigation";
 import { t } from "@/utils";
 import CategoryNode from "./CategoryNode";
-import { useState } from "react";
 import { useNavigate } from "../Common/useNavigate";
 import useGetCategories from "../Layout/useGetCategories";
 
@@ -22,15 +21,6 @@ const FilterTree = ({ extraDetails }) => {
   } = useGetCategories();
   const hasMore = catCurrentPage < catLastPage;
 
-  const selectedSlug = searchParams.get("category") || "";
-  const isSelected = !selectedSlug; // "All" category is selected when no category is selected
-
-  const [expanded, setExpanded] = useState(true);
-
-  const handleToggleExpand = () => {
-    setExpanded((prev) => !prev);
-  };
-
   const handleClick = () => {
     const params = new URLSearchParams(searchParams);
     params.delete("category");
@@ -46,55 +36,59 @@ const FilterTree = ({ extraDetails }) => {
   };
 
   return (
-    <ul>
-      <li>
-        <div className="flex items-center rounded text-sm">
-          {isCatLoading ? (
-            <div className="p-1">
-              <Loader2 className="size-[14px] animate-spin text-muted-foreground" />
-            </div>
-          ) : (
-            <button
-              className="text-sm p-1 hover:bg-muted rounded-sm"
-              onClick={handleToggleExpand}
+    <div className="w-full">
+      {/* Lista Limpa */}
+      {cateData.length > 0 ? (
+        <ul className="space-y-1">
+          {/* Item opcional 'Todas' caso queira manter a lógica, mas estilizado simples */}
+          {/* Se quiser remover 'Todas as Categorias' e deixar só a lista como na imagem, comente as linhas abaixo */}
+          <li>
+             <button
+                onClick={handleClick}
+                className={cn(
+                  "text-sm w-full text-left py-1.5 px-1 hover:text-primary transition-colors flex items-center gap-2",
+                  !searchParams.get("category") ? "font-bold text-black" : "text-gray-600"
+                )}
             >
-              {expanded ? <Minus size={14} /> : <Plus size={14} />}
+                {t("allCategories")}
+            </button>
+          </li>
+
+          {/* Nós de Categoria */}
+          {cateData.map((category) => (
+            <CategoryNode
+              key={category.id + "filter-tree"}
+              category={category}
+              extraDetails={extraDetails}
+            />
+          ))}
+
+          {/* Botão Carregar Mais */}
+          {hasMore && (
+            <button
+              onClick={() => getCategories(catCurrentPage + 1)}
+              className="text-gray-500 text-xs mt-3 hover:text-black hover:underline block w-full text-left pl-1"
+              disabled={isCatLoadMore}
+            >
+              {isCatLoadMore ? (
+                  <span className="flex items-center gap-1">
+                      <Loader2 className="h-3 w-3 animate-spin" /> {t("loading")}
+                  </span>
+              ) : (
+                  t("loadMore")
+              )}
             </button>
           )}
-
-          <button
-            onClick={handleClick}
-            className={cn(
-              "flex-1 ltr:text-left rtl:text-right py-1 px-2 rounded-sm",
-              isSelected && "border bg-muted"
-            )}
-          >
-            {t("allCategories")}
-          </button>
-        </div>
-        {expanded && cateData.length > 0 && (
-          <ul className="ltr:ml-3 rtl:mr-3 ltr:border-l rtl:border-r ltr:pl-2 rtl:pr-2 space-y-1">
-            {cateData.map((category) => (
-              <CategoryNode
-                key={category.id + "filter-tree"}
-                category={category}
-                extraDetails={extraDetails}
-              />
-            ))}
-
-            {hasMore && (
-              <button
-                onClick={() => getCategories(catCurrentPage + 1)}
-                className="text-primary text-center text-sm py-1 px-2"
-                disabled={isCatLoadMore}
-              >
-                {isCatLoadMore ? t("loading") : t("loadMore")}
-              </button>
-            )}
-          </ul>
-        )}
-      </li>
-    </ul>
+        </ul>
+      ) : (
+        /* Estado de Loading Inicial */
+        isCatLoading && (
+            <div className="flex justify-start p-2">
+                <Loader2 className="h-5 w-5 animate-spin text-gray-400" />
+            </div>
+        )
+      )}
+    </div>
   );
 };
 

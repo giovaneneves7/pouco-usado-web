@@ -115,7 +115,7 @@ const AllItems = ({ cityData, KmRange }) => {
 
   return (
     <section className="container mt-12">
-      <h5 className="text-xl sm:text-2xl font-medium">{t("allItems")}</h5>
+      <h5 className="text-xl sm:text-2xl font-medium">{t("Todos os Classificados")}</h5>
 
       {/* Location Alert - shows when items are from different location */}
       {locationAlertMessage && AllItem.length > 0 && (
@@ -152,7 +152,7 @@ const AllItems = ({ cityData, KmRange }) => {
             disabled={isLoading || isLoadMore}
             onClick={handleLoadMore}
           >
-            {isLoadMore ? t("loading") : t("loadMore")}
+            {isLoadMore ? t("Carregando") : t("Ver mais")}
           </Button>
         </div>
       )}

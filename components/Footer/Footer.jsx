@@ -1,249 +1,189 @@
 "use client";
 import CustomLink from "@/components/Common/CustomLink";
-import { FaFacebook, FaLinkedin, FaPinterest } from "react-icons/fa";
+import { FaFacebook, FaLinkedin, FaWhatsapp, FaPinterest } from "react-icons/fa";
 import { FaInstagram, FaSquareXTwitter } from "react-icons/fa6";
-import { SlLocationPin } from "react-icons/sl";
-import { RiMailSendFill } from "react-icons/ri";
-import { BiPhoneCall } from "react-icons/bi";
 import { t } from "@/utils";
 import { quickLinks } from "@/utils/constants";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { settingsData } from "@/redux/reducer/settingSlice";
-import googleDownload from "../../public/assets/Google Download.png";
-import appleDownload from "../../public/assets/iOS Download.png";
-import { usePathname } from "next/navigation";
 import { CurrentLanguageData } from "@/redux/reducer/languageSlice";
+import { getIsLoggedIn } from "@/redux/reducer/authSlice";
+import { setIsLoginOpen } from "@/redux/reducer/globalStateSlice";
 import CustomImage from "../Common/CustomImage";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Footer() {
   const CurrentLanguage = useSelector(CurrentLanguageData);
-  const pathname = usePathname();
   const settings = useSelector(settingsData);
   const currentYear = new Date().getFullYear();
-  const showGetInTouchSection =
-    settings?.company_address ||
-    settings?.company_email ||
-    settings?.company_tel1 ||
-    settings?.company_tel2;
+  const IsLoggedin = useSelector(getIsLoggedIn);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-  const showDownloadLinks =
-    settings?.play_store_link && settings?.app_store_link;
-
-  const marginTop = showDownloadLinks ? "mt-[150px]" : "mt-48";
+  // Função para lidar com o clique no botão "Criar conta" na barra escura
+  const handleCreateAccount = () => {
+    if (IsLoggedin) {
+      router.push("/ad-listing");
+    } else {
+      dispatch(setIsLoginOpen(true));
+    }
+  };
 
   return (
-    <footer className={`bg-[#1a1a1a] text-white ${marginTop}`}>
-      <div className="container py-12 relative">
-        {showDownloadLinks && (
-          <div className="relative bg-[#FF7F50] top-[-140px] lg:top-[-125px] xl:top-[-150px] p-6 xl:p-12 rounded-md flex flex-col lg:flex-row items-center justify-between">
-            <h2 className="text-3xl md:text-4xl xl:text-5xl text-center lg:text-left text-balance font-light mb-4 md:mb-0 w-full">
-              {t("experienceTheMagic")} {settings?.company_name} {t("app")}
-            </h2>
-            <div className="flex flex-row lg:flex-row items-center">
-              {settings?.app_store_link && (
-                <Link href={settings?.play_store_link}>
-                  <CustomImage
-                    src={googleDownload}
-                    alt="google"
-                    className="storeIcons"
-                    width={235}
-                    height={85}
-                  />
-                </Link>
-              )}
-              {settings?.app_store_link && (
-                <Link href={settings?.app_store_link}>
-                  <CustomImage
-                    src={appleDownload}
-                    alt="apple"
-                    className="storeIcons"
-                    width={235}
-                    height={85}
-                  />
-                </Link>
-              )}
-            </div>
-          </div>
-        )}
-
-        <div
-          className={`grid grid-1 sm:grid-cols-12 gap-12 ${
-            showDownloadLinks && "mt-[-70px] lg:mt-[-64px] xl:mt-[-75px]"
-          }`}
-        >
-          {/* Company Info */}
-          <div className="space-y-6 sm:col-span-12 lg:col-span-4">
-            <CustomLink href="/">
-              <CustomImage
-                src={settings?.footer_logo}
-                alt="eClassify"
-                width={195}
-                height={52}
-                className="w-full h-[52px] object-contain ltr:object-left rtl:object-right max-w-[195px]"
-              />
-            </CustomLink>
-            <p className="text-gray-300 text-sm max-w-md">
-              {settings?.footer_description}
-            </p>
-            <div className="flex items-center flex-wrap gap-6">
-              {settings?.facebook_link && (
-                <CustomLink
-                  href={settings?.facebook_link}
-                  target="_blank"
-                  className="footerSocialLinks"
-                  rel="noopener noreferrer"
-                >
-                  <FaFacebook size={22} />
-                </CustomLink>
-              )}
-
-              {settings?.instagram_link && (
-                <Link
-                  href={settings?.instagram_link}
-                  target="_blank"
-                  className="footerSocialLinks"
-                  rel="noopener noreferrer"
-                >
-                  <FaInstagram size={22} />
-                </Link>
-              )}
-
-              {settings?.x_link && (
-                <Link
-                  href={settings?.x_link}
-                  target="_blank"
-                  className="footerSocialLinks"
-                  rel="noopener noreferrer"
-                >
-                  <FaSquareXTwitter size={22} />
-                </Link>
-              )}
-
-              {settings?.linkedin_link && (
-                <Link
-                  href={settings?.linkedin_link}
-                  target="_blank"
-                  className="footerSocialLinks"
-                  rel="noopener noreferrer"
-                >
-                  <FaLinkedin size={22} />
-                </Link>
-              )}
-
-              {settings?.pinterest_link && (
-                <Link
-                  href={settings?.pinterest_link}
-                  target="_blank"
-                  className="footerSocialLinks"
-                  rel="noopener noreferrer"
-                >
-                  <FaPinterest size={22} />
-                </Link>
-              )}
-            </div>
-          </div>
-
-          <div className="sm:col-span-12 lg:hidden border-t-2 border-dashed border-gray-500 w-full"></div>
-
-          {/* Quick Links */}
-          <div className="ltr:lg:border-l-2 rtl:lg:border-r-2 lg:border-dashed lg:border-gray-500 ltr:lg:pl-6 rtl:lg:pr-6 sm:col-span-6 lg:col-span-4">
-            <h3 className="text-xl font-semibold mb-6">{t("quickLinks")}</h3>
-            <nav className="space-y-4">
-              {quickLinks.map((link) => (
-                <CustomLink
-                  key={link.id}
-                  href={link.href}
-                  className="group block hover:text-[var(--primary-color)] transition-colors"
-                >
-                  <span className="relative flex items-center">
-                    <span className="absolute left-0 top-1/2 transform -translate-y-1/2 h-[10px] w-[10px] bg-[var(--primary-color)] rounded-full opacity-0 group-hover:opacity-100 transition-all duration-500"></span>
-                    <span className="opacity-65 group-hover:text-[var(--primary-color)] group-hover:opacity-100 group-hover:ml-4 transition-all duration-500">
-                      {t(link.labelKey)}
-                    </span>
-                  </span>
-                </CustomLink>
-              ))}
-            </nav>
-          </div>
-
-          {/* Contact Information */}
-
-          {showGetInTouchSection && (
-            <div className="ltr:lg:border-l-2 rtl:lg:border-r-2 lg:border-dashed lg:border-gray-500 ltr:lg:pl-6 rtl:lg:pr-6 sm:col-span-6 lg:col-span-4">
-              <h3 className="text-xl font-semibold mb-6">{t("getInTouch")}</h3>
-              <div className="space-y-6">
-                {settings?.company_address && (
-                  <div className="flex items-center gap-3">
-                    <div className="footerContactIcons">
-                      <SlLocationPin size={22} />
-                    </div>
-                    <p className="footerLabel">{settings?.company_address}</p>
-                  </div>
-                )}
-
-                {settings?.company_email && (
-                  <div className="flex items-center gap-3">
-                    <div className="footerContactIcons">
-                      <RiMailSendFill size={22} />
-                    </div>
-                    <CustomLink
-                      href={`mailto:${settings?.company_email}`}
-                      className="footerLabel"
-                    >
-                      {settings?.company_email}
-                    </CustomLink>
-                  </div>
-                )}
-
-                {(settings?.company_tel1 || settings?.company_tel2) && (
-                  <div className="flex items-center gap-3">
-                    <div className="footerContactIcons">
-                      <BiPhoneCall size={22} />
-                    </div>
-                    <div className="flex flex-col gap-1">
-                      {settings?.company_tel1 && (
-                        <CustomLink
-                          href={`tel:${settings?.company_tel1}`}
-                          className="footerLabel"
-                        >
-                          {settings?.company_tel1}
-                        </CustomLink>
-                      )}
-                      {settings?.company_tel2 && (
-                        <CustomLink
-                          href={`tel:${settings?.company_tel2}`}
-                          className="footerLabel"
-                        >
-                          {settings?.company_tel2}
-                        </CustomLink>
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )}
+    <footer>
+      {/* 1. Barra de CTA Escura (Topo) */}
+      <div className="bg-slate-800 py-6">
+        <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
+          <h2 className="text-white text-lg md:text-xl font-medium text-center md:text-left">
+            Você tem alguma coisa usada e quer vender?
+          </h2>
+          <button 
+            onClick={handleCreateAccount}
+            className="border border-white/30 text-white hover:bg-white hover:text-slate-800 transition-colors px-6 py-2 rounded-md font-medium text-sm uppercase tracking-wide"
+          >
+            {IsLoggedin ? t("adListing") : t("Cadastre-se")}
+          </button>
         </div>
       </div>
 
-      {/* Copyright */}
-      <div className="container">
-        <div className="py-4 flex flex-wrap gap-3 justify-between items-center border-t-2 border-dashed border-gray-500">
-          <p className="footerLabel">
-            {t("copyright")} © {settings?.company_name} {currentYear}.{" "}
-            {t("allRightsReserved")}
-          </p>
-          <div className="flex flex-wrap gap-4 whitespace-nowrap">
-            <CustomLink href="/privacy-policy" className="footerLabel">
-              {t("privacyPolicy")}
-            </CustomLink>
-            <CustomLink href="/terms-and-condition" className="footerLabel">
-              {t("termsConditions")}
-            </CustomLink>
-            <CustomLink href="/refund-policy" className="footerLabel">
-              {t("refundPolicy")}
-            </CustomLink>
+      {/* 2. Conteúdo Principal (Fundo Claro) */}
+      <div className="bg-gray-100 text-gray-600 pt-12 pb-8">
+        <div className="container">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
+            
+            {/* Coluna 1: Logo, Descrição e Botão Blog */}
+            <div className="lg:col-span-4 space-y-4">
+                {/* Logo Dinâmica */}
+                <CustomLink href="/">
+                  <CustomImage
+                    src={settings?.footer_logo} 
+                    alt="Logo"
+                    width={150}
+                    height={45}
+                    className="object-contain ltr:object-left rtl:object-right h-[45px] w-auto"
+                  />
+                </CustomLink>
+                
+                <p className="text-sm leading-relaxed text-gray-500">
+                  {settings?.footer_description || "Anuncie grátis! Venda eletrônicos, carros, celulares e muito mais sem taxas ou comissões."}
+                </p>
+
+                {/* Botão Blog */}
+                <div className="pt-2">
+                    <Link href="/blog" className="inline-block bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1.5 px-4 rounded text-sm transition-colors">
+                        Blog
+                    </Link>
+                </div>
+            </div>
+
+            {/* Coluna 2: Compartilhar (Links específicos solicitados) */}
+            <div className="lg:col-span-4">
+              <h3 className="text-gray-900 font-bold text-lg mb-4">Compartilhar</h3>
+              <ul className="space-y-3">
+                 {/* WhatsApp */}
+                 <li>
+                    <Link 
+                        href="whatsapp://send?text=https%3A%2F%2Fpoucousado.com.br%2F" 
+                        target="_blank" 
+                        className="flex items-center gap-3 hover:text-[var(--primary-color)] transition-colors"
+                    >
+                        <FaWhatsapp size={18} />
+                        <span>Whatsapp</span>
+                    </Link>
+                 </li>
+                 
+                 {/* Facebook Sharer */}
+                 <li>
+                    <Link 
+                        href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpoucousado.com.br%2F" 
+                        target="_blank" 
+                        className="flex items-center gap-3 hover:text-[var(--primary-color)] transition-colors"
+                    >
+                        <FaFacebook size={18} />
+                        <span>Facebook</span>
+                    </Link>
+                 </li>
+
+                 {/* Twitter / X Sharer */}
+                 <li>
+                     <Link 
+                        href="https://twitter.com/home?status=https%3A%2F%2Fpoucousado.com.br%2F%20-%20" 
+                        target="_blank" 
+                        className="flex items-center gap-3 hover:text-[var(--primary-color)] transition-colors"
+                    >
+                        <FaSquareXTwitter size={18} />
+                        <span>Twitter / X</span>
+                    </Link>
+                 </li>
+
+                 {/* LinkedIn Share Article */}
+                 <li>
+                     <Link 
+                        href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fpoucousado.com.br%2F&title=&summary=&source=" 
+                        target="_blank" 
+                        className="flex items-center gap-3 hover:text-[var(--primary-color)] transition-colors"
+                    >
+                        <FaLinkedin size={18} />
+                        <span>LinkedIn</span>
+                    </Link>
+                 </li>
+                 
+                 {/* Instagram (Link de perfil, pois não tem sharer web padrão) */}
+                 {settings?.instagram_link && (
+                    <li>
+                         <Link href={settings.instagram_link} target="_blank" className="flex items-center gap-3 hover:text-[var(--primary-color)] transition-colors">
+                            <FaInstagram size={18} />
+                            <span>Instagram</span>
+                        </Link>
+                    </li>
+                 )}
+              </ul>
+            </div>
+
+            <div className="lg:col-span-4">
+              <h3 className="text-gray-900 font-bold text-lg mb-4">{t("Informações")}</h3>
+              <ul className="space-y-2 text-sm">
+                <li>
+                    <Link href="/privacy-policy" className="hover:underline hover:text-gray-900 block py-1">
+                        {t("Política e Privacidade")}
+                    </Link>
+                </li>
+                <li>
+                    <Link href="/terms-and-condition" className="hover:underline hover:text-gray-900 block py-1">
+                        {t("Termos e Condições")}
+                    </Link>
+                </li>
+                {quickLinks.slice(0, 4).map((link) => (
+                    <li key={link.id}>
+                        <CustomLink href={link.href} className="hover:underline hover:text-gray-900 block py-1">
+                             {t(link.labelKey)}
+                        </CustomLink>
+                    </li>
+                ))}
+              </ul>
+            </div>
+
+          </div>
+
+          {/* Divisor */}
+          <div className="border-t border-gray-300 mt-10 mb-6"></div>
+
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs text-gray-500">
+            
+            <div className="flex flex-col gap-1">
+                <h4 className="font-bold text-gray-700 text-sm mb-1">{t("contact")}</h4>
+                <p>
+                    {t("copyright")} © {settings?.company_name} {currentYear}. {t("Todos os Direitos Reservados")}
+                </p>
+            </div>
+            
+            <div className="flex gap-4">
+                 <Link href="/refund-policy" className="hover:text-gray-800 transition-colors">
+                    {t("refundPolicy")}
+                 </Link>
+            </div>
+
           </div>
         </div>
       </div>

@@ -26,9 +26,9 @@ export const quickLinks = [
     {
         id: 1,
         href: "/about-us",
-        labelKey: "aboutUs",
+        labelKey: "Sobre O Pouco Usado",
     },
-    {
+    /*{
         id: 2,
         href: "/contact-us",
         labelKey: "contactUs",
@@ -47,5 +47,5 @@ export const quickLinks = [
         id: 5,
         href: "/faqs",
         labelKey: "faqs",
-    },
+    },*/
 ];
