@@ -150,9 +150,9 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
           >
             <IoChatboxEllipsesOutline size={22} />
             {IsStartingChat ? (
-              <span>{t("startingChat")}</span>
+              <span>{t("Iniciando Chat")}</span>
             ) : (
-              <span>{t("startChat")}</span>
+              <span>{t("Chat")}</span>
             )}
           </button>
 
@@ -163,7 +163,7 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
                 className="bg-[#000] text-white p-4 rounded-md flex items-center gap-2 text-base font-medium justify-center whitespace-nowrap [flex:1_1_47%]"
               >
                 <BiPhoneCall size={21} />
-                <span>{t("call")}</span>
+                <span>{t("Ligar")}</span>
               </Link>
             )}
           {isAllowedToMakeOffer && (
@@ -172,7 +172,7 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
               className="bg-primary text-white p-4 rounded-md flex items-center gap-2 text-base font-medium justify-center whitespace-nowrap [flex:1_1_47%]"
             >
               <Gift size={21} />
-              {t("makeOffer")}
+              {t("Fazer uma Oferta")}
             </button>
           )}
           {isJobCategory && (

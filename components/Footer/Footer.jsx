@@ -32,9 +32,8 @@ export default function Footer() {
 
   return (
     <footer>
-      {/* 1. Barra de CTA Escura (Topo) */}
       <div className="bg-slate-800 py-6">
-        <div className="container flex flex-col md:flex-row items-center justify-between gap-4">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px] flex flex-col md:flex-row items-center justify-between gap-4">
           <h2 className="text-white text-lg md:text-xl font-medium text-center md:text-left">
             Você tem alguma coisa usada e quer vender?
           </h2>
@@ -42,19 +41,16 @@ export default function Footer() {
             onClick={handleCreateAccount}
             className="border border-white/30 text-white hover:bg-white hover:text-slate-800 transition-colors px-6 py-2 rounded-md font-medium text-sm uppercase tracking-wide"
           >
-            {IsLoggedin ? t("adListing") : t("Cadastre-se")}
+            {IsLoggedin ? t("Anunciar") : t("Cadastre-se")}
           </button>
         </div>
       </div>
 
-      {/* 2. Conteúdo Principal (Fundo Claro) */}
       <div className="bg-gray-100 text-gray-600 pt-12 pb-8">
-        <div className="container">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px]">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
             
-            {/* Coluna 1: Logo, Descrição e Botão Blog */}
             <div className="lg:col-span-4 space-y-4">
-                {/* Logo Dinâmica */}
                 <CustomLink href="/">
                   <CustomImage
                     src={settings?.footer_logo} 
@@ -69,7 +65,6 @@ export default function Footer() {
                   {settings?.footer_description || "Anuncie grátis! Venda eletrônicos, carros, celulares e muito mais sem taxas ou comissões."}
                 </p>
 
-                {/* Botão Blog */}
                 <div className="pt-2">
                     <Link href="/blog" className="inline-block bg-gray-200 hover:bg-gray-300 text-gray-700 font-semibold py-1.5 px-4 rounded text-sm transition-colors">
                         Blog
@@ -77,11 +72,9 @@ export default function Footer() {
                 </div>
             </div>
 
-            {/* Coluna 2: Compartilhar (Links específicos solicitados) */}
             <div className="lg:col-span-4">
               <h3 className="text-gray-900 font-bold text-lg mb-4">Compartilhar</h3>
               <ul className="space-y-3">
-                 {/* WhatsApp */}
                  <li>
                     <Link 
                         href="whatsapp://send?text=https%3A%2F%2Fpoucousado.com.br%2F" 
@@ -93,7 +86,6 @@ export default function Footer() {
                     </Link>
                  </li>
                  
-                 {/* Facebook Sharer */}
                  <li>
                     <Link 
                         href="https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fpoucousado.com.br%2F" 
@@ -105,7 +97,6 @@ export default function Footer() {
                     </Link>
                  </li>
 
-                 {/* Twitter / X Sharer */}
                  <li>
                      <Link 
                         href="https://twitter.com/home?status=https%3A%2F%2Fpoucousado.com.br%2F%20-%20" 
@@ -117,7 +108,6 @@ export default function Footer() {
                     </Link>
                  </li>
 
-                 {/* LinkedIn Share Article */}
                  <li>
                      <Link 
                         href="https://www.linkedin.com/shareArticle?mini=true&url=https%3A%2F%2Fpoucousado.com.br%2F&title=&summary=&source=" 
@@ -129,7 +119,6 @@ export default function Footer() {
                     </Link>
                  </li>
                  
-                 {/* Instagram (Link de perfil, pois não tem sharer web padrão) */}
                  {settings?.instagram_link && (
                     <li>
                          <Link href={settings.instagram_link} target="_blank" className="flex items-center gap-3 hover:text-[var(--primary-color)] transition-colors">
@@ -172,7 +161,7 @@ export default function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 text-xs text-gray-500">
             
             <div className="flex flex-col gap-1">
-                <h4 className="font-bold text-gray-700 text-sm mb-1">{t("contact")}</h4>
+                <h4 className="font-bold text-gray-700 text-sm mb-1">{t("Contato")}</h4>
                 <p>
                     {t("copyright")} © {settings?.company_name} {currentYear}. {t("Todos os Direitos Reservados")}
                 </p>

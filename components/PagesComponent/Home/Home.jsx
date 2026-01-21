@@ -10,6 +10,7 @@ import OfferSliderSkeleton from "@/components/PagesComponent/Home/OfferSliderSke
 import FeaturedSectionsSkeleton from "./FeaturedSectionsSkeleton";
 import PopularCategories from "./PopularCategories";
 import dynamic from "next/dynamic";
+import BottomNav from "@/components/Layout/BottomNav";
 
 const OfferSlider = dynamic(() => import("./OfferSlider"), {
   ssr: false,
@@ -74,6 +75,7 @@ const Home = () => {
   }, [cityData.lat, cityData.long, KmRange, currentLanguageCode]);
   return (
     <>
+    <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px]">
       {IsSliderLoading ? (
         <OfferSliderSkeleton />
       ) : (
@@ -93,6 +95,7 @@ const Home = () => {
         />
       )}
       <AllItems cityData={cityData} KmRange={KmRange} />
+      </div>
     </>
   );
 };

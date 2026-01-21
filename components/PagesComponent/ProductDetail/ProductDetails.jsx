@@ -157,105 +157,95 @@ const ProductDetails = ({ slug }) => {
         <PageLoader />
       ) : productDetails ? (
         <>
-          {isMyListing ? (
-            <BreadCrumb />
-          ) : (
-            <BreadCrumb
-              title2={truncate(
-                productDetails?.translated_item?.name || productDetails?.name,
-                80
-              )}
-            />
-          )}
-          <div className="container mt-8">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-7 mt-6">
-              <div className="col-span-1 lg:col-span-8">
-                <div className="flex flex-col gap-7">
-                  <ProductGallery
-                    galleryImages={galleryImages}
-                    videoData={videoData}
-                  />
+          <div className="bg-white border-b hidden md:block">
+            <BreadCrumb title2={truncate(productDetails?.translated_item?.name || productDetails?.name, 80)} />
+          </div>
 
-                  {IsShowFeaturedAd && (
-                    <MakeFeaturedAd
-                      item_id={productDetails?.id}
+          <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px] mt-4 md:mt-8">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+
+              <div className="lg:col-span-8 space-y-6">
+                <div className="bg-white rounded-xl overflow-hidden border">
+                  <ProductGallery galleryImages={galleryImages} videoData={videoData} />
+                </div>
+
+                <div className="lg:hidden space-y-2 px-1">
+                  <h1 className="text-xl font-bold text-gray-900">
+                    {productDetails?.translated_item?.name || productDetails?.name}
+                  </h1>
+                  <p className="text-2xl font-extrabold text-gray-900">
+                    {productDetails?.price ? `R$ ${productDetails.price}` : t("priceNotMentioned")}
+                  </p>
+                </div>
+
+                <div className="bg-white p-6 rounded-xl border space-y-8">
+                  <div className="hidden lg:block border-b pb-4">
+                    <h1 className="text-2xl font-bold text-gray-800">
+                      {productDetails?.translated_item?.name || productDetails?.name}
+                    </h1>
+                    <div className="flex items-center gap-4 text-sm text-gray-500 mt-2">
+                      <span>Publicado em {productDetails?.created_at}</span>
+                      <span>ID: {productDetails?.id}</span>
+                    </div>
+                  </div>
+
+                  {filteredFields.length > 0 && (
+                    <div className="space-y-4">
+                      <h2 className="text-lg font-bold border-l-4 border-primary pl-3">{t("Details")}</h2>
+                      <ProductFeature filteredFields={filteredFields} />
+                    </div>
+                  )}
+
+                  <div className="space-y-4">
+                    <h2 className="text-lg font-bold border-l-4 border-primary pl-3">{t("description")}</h2>
+                    <ProductDescription productDetails={productDetails} />
+                  </div>
+
+                  <div className="pt-4">
+                    <ProductLocation productDetails={productDetails} />
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-4 space-y-6">
+                <div className="hidden lg:block bg-white p-6 rounded-xl border shadow-sm sticky top-24">
+                  <div className="text-3xl font-black text-gray-900 mb-6">
+                    {productDetails?.price ? `R$ ${productDetails.price}` : t("priceNotMentioned")}
+                  </div>
+
+                  {!isMyListing && (
+                    <SellerDetailCard
+                      productDetails={productDetails}
                       setProductDetails={setProductDetails}
                     />
                   )}
 
-                  {filteredFields.length > 0 && (
-                    <ProductFeature filteredFields={filteredFields} />
-                  )}
-                  <ProductDescription productDetails={productDetails} />
+                </div>
+
+                <div className="lg:hidden">
+                  {!isMyListing && <SellerDetailCard productDetails={productDetails} />}
+                </div>
+
+                <div className="bg-gray-50 p-6 rounded-xl border border-dashed border-gray-300">
+                  <h3 className="font-bold text-sm text-gray-700 mb-4 text-center uppercase tracking-wider">Dicas de segurança</h3>
+                  <ul className="text-xs space-y-3 text-gray-600">
+                    <li className="flex gap-2">🛡️ <span>Nunca pague antes de ver o produto.</span></li>
+                    <li className="flex gap-2">🤝 <span>Encontros em locais públicos e movimentados.</span></li>
+                  </ul>
                 </div>
               </div>
-              <div className="flex flex-col col-span-1 lg:col-span-4 gap-7">
-                {isMyListing ? (
-                  <MyAdsListingDetailCard productDetails={productDetails} />
-                ) : (
-                  <ProductDetailCard
-                    productDetails={productDetails}
-                    setProductDetails={setProductDetails}
-                  />
-                )}
 
-                {!isMyListing && (
-                  <SellerDetailCard
-                    productDetails={productDetails}
-                    setProductDetails={setProductDetails}
-                  />
-                )}
-
-                {isMyListing && (
-                  <AdsStatusChangeCards
-                    productDetails={productDetails}
-                    setProductDetails={setProductDetails}
-                    status={status}
-                    setStatus={setStatus}
-                  />
-                )}
-
-                {isEditedByAdmin && (
-                  <AdEditedByAdmin
-                    admin_edit_reason={productDetails?.admin_edit_reason}
-                  />
-                )}
-
-                {isMyAdExpired && (
-                  <RenewAd
-                    item_id={productDetails?.id}
-                    setProductDetails={setProductDetails}
-                    currentLanguageId={CurrentLanguage?.id}
-                    setStatus={setStatus}
-                  />
-                )}
-
-                <ProductLocation productDetails={productDetails} />
-
-                {!isMyListing && !productDetails?.is_already_reported && (
-                  <AdsReportCard
-                    productDetails={productDetails}
-                    setProductDetails={setProductDetails}
-                  />
-                )}
-              </div>
             </div>
+
             {!isMyListing && (
-              <SimilarProducts
-                productDetails={productDetails}
-                key={`similar-products-${CurrentLanguage?.id}`}
-              />
+              <div className="mt-12">
+                <SimilarProducts productDetails={productDetails} />
+              </div>
             )}
-            <OpenInAppDrawer
-              isOpenInApp={isOpenInApp}
-              setIsOpenInApp={setIsOpenInApp}
-            />
           </div>
         </>
       ) : (
-        <div className="container mt-8">
-          <NoData name={t("oneAdvertisement")} />
-        </div>
+        <NoData name={t("oneAdvertisement")} />
       )}
     </Layout>
   );

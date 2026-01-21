@@ -142,7 +142,7 @@ const HomeMobileMenu = ({
       <SheetTrigger asChild className="lg:hidden">
         <button
           id="hamburg"
-          className="text-2xl cursor-pointer border rounded-lg p-1"
+          className="text-2xl cursor-pointer p-1"
         >
           <GiHamburgerMenu size={25} className="text-primary" />
         </button>

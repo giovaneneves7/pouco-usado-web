@@ -92,8 +92,8 @@ const HeaderCategories = ({ cateData }) => {
   };
 
   return (
-    <div className="hidden lg:block py-1.5 border-b">
-      <div className="container" ref={containerRef}>
+    <div className="hidden lg:block py-1.5 border-b bg-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px]" ref={containerRef}>
         {/* Hidden measurement row */}
         <div
           ref={measureRef}

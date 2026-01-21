@@ -36,6 +36,14 @@ import {
 } from "@/redux/reducer/breadCrumbSlice";
 import { t, updateMetadata } from "@/utils";
 import { getSelectedLocation } from "@/redux/reducer/globalStateSlice";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from "@/components/ui/sheet";
+import { LuFilter } from "react-icons/lu";
 
 const Ads = () => {
   const dispatch = useDispatch();
@@ -52,6 +60,7 @@ const Ads = () => {
     isLoadMore: false,
   });
   const [featuredTitle, setFeaturedTitle] = useState("");
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   const selectedLocation = useSelector(getSelectedLocation);
 
@@ -184,7 +193,7 @@ const Ads = () => {
         if (response?.data?.error === false) {
           setFeaturedTitle(
             response?.data?.data?.[0]?.translated_name ||
-              response?.data?.data?.[0]?.title
+            response?.data?.data?.[0]?.title
           );
         } else {
           console.error(response?.data?.message);
@@ -349,17 +358,17 @@ const Ads = () => {
       if (data.error === false) {
         page > 1
           ? setAdvertisements((prev) => ({
-              ...prev,
-              data: [...prev.data, ...data?.data?.data],
-              currentPage: data?.data?.current_page,
-              hasMore: data?.data?.last_page > data?.data?.current_page,
-            }))
+            ...prev,
+            data: [...prev.data, ...data?.data?.data],
+            currentPage: data?.data?.current_page,
+            hasMore: data?.data?.last_page > data?.data?.current_page,
+          }))
           : setAdvertisements((prev) => ({
-              ...prev,
-              data: data?.data?.data,
-              currentPage: data?.data?.current_page,
-              hasMore: data?.data?.last_page > data?.data?.current_page,
-            }));
+            ...prev,
+            data: data?.data?.data,
+            currentPage: data?.data?.current_page,
+            hasMore: data?.data?.last_page > data?.data?.current_page,
+          }));
       }
     } catch (error) {
       console.log(error);
@@ -378,7 +387,7 @@ const Ads = () => {
   };
 
   const handleSortBy = (value) => {
-    newSearchParams.set("sort_by", value);
+    newSearchParams.set("Ordenar por:", value);
     window.history.pushState(null, "", `/ads?${newSearchParams.toString()}`);
   };
 
@@ -473,25 +482,60 @@ const Ads = () => {
     date_posted === "all-time"
       ? t("allTime")
       : date_posted === "today"
-      ? t("today")
-      : date_posted === "within-1-week"
-      ? t("within1Week")
-      : date_posted === "within-2-week"
-      ? t("within2Weeks")
-      : date_posted === "within-1-month"
-      ? t("within1Month")
-      : date_posted === "within-3-month"
-      ? t("within3Months")
-      : "";
+        ? t("today")
+        : date_posted === "within-1-week"
+          ? t("within1Week")
+          : date_posted === "within-2-week"
+            ? t("within2Weeks")
+            : date_posted === "within-1-month"
+              ? t("within1Month")
+              : date_posted === "within-3-month"
+                ? t("within3Months")
+                : "";
 
   return (
     <Layout>
       <BreadCrumb />
-      <div className="container mt-8">
+      <div className="container mt-8 relative">
+
+        <div className="lg:hidden fixed bottom-24 right-6 z-50">
+          <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+            <SheetTrigger asChild>
+              <Button className="rounded-full shadow-2xl px-6 py-6 bg-slate-800 hover:bg-slate-700 flex gap-2 items-center">
+                <LuFilter size={20} />
+                <span className="font-bold">{t("Filtrar resultados")}</span>
+                {activeFilterCount > 0 && (
+                  <span className="bg-primary text-white rounded-full w-5 h-5 text-[10px] flex items-center justify-center">
+                    {activeFilterCount}
+                  </span>
+                )}
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="bottom" className="h-[90vh] overflow-y-auto rounded-t-[20px]">
+              <SheetHeader className="mb-4">
+                <SheetTitle className="text-left">{t("Filtros e Categorias")}</SheetTitle>
+              </SheetHeader>
+              <Filter
+                customFields={customFields}
+                extraDetails={extraDetails}
+                setExtraDetails={setExtraDetails}
+                newSearchParams={newSearchParams}
+                country={country}
+                state={state}
+                city={city}
+                area={area}
+                onApply={() => setIsMobileFilterOpen(false)}
+              />
+            </SheetContent>
+          </Sheet>
+        </div>
+
         <div className="flex flex-col">
           <h1 className="text-2xl font-semibold mb-6">{title}</h1>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="xl:col-span-3 lg:col-span-4 col-span-1">
+
+            <div className="hidden lg:block xl:col-span-3 lg:col-span-4">
               <Filter
                 customFields={customFields}
                 extraDetails={extraDetails}
@@ -509,31 +553,31 @@ const Ads = () => {
                   <div className="flex flex-col md:flex-row  items-start md:items-center gap-2">
                     <div className="flex gap-2 items-center whitespace-nowrap">
                       <TbTransferVertical />
-                      {t("sortBy")}
+                      {t("Ordenar por")}
                     </div>
                     <Select value={sortBy} onValueChange={handleSortBy}>
                       <SelectTrigger className="max-w-[180px] font-semibold">
                         <SelectValue
-                          placeholder={t("sortBy")}
+                          placeholder={t("Ordenar por")}
                           className="font-semibold"
                         />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup className="font-semibold">
                           <SelectItem value="new-to-old">
-                            {t("newestToOldest")}
+                            {t("Recentes")}
                           </SelectItem>
                           <SelectItem value="old-to-new">
-                            {t("oldestToNewest")}
+                            {t("Mais Antigos")}
                           </SelectItem>
                           <SelectItem value="price-high-to-low">
-                            {t("priceHighToLow")}
+                            {t("Maior Preço")}
                           </SelectItem>
                           <SelectItem value="price-low-to-high">
-                            {t("priceLowToHigh")}
+                            {t("Menor Preço")}
                           </SelectItem>
                           <SelectItem value="popular_items">
-                            {t("popular")}
+                            {t("Popular")}
                           </SelectItem>
                         </SelectGroup>
                       </SelectContent>
@@ -544,17 +588,15 @@ const Ads = () => {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => setView("list")}
-                    className={`text-muted-foreground p-3 rounded-full ${
-                      view === "list" ? "bg-primary text-white" : ""
-                    }`}
+                    className={`text-muted-foreground p-3 rounded-full ${view === "list" ? "bg-primary text-white" : ""
+                      }`}
                   >
                     <CiGrid2H size={22} />
                   </button>
                   <button
                     onClick={() => setView("grid")}
-                    className={` text-muted-foreground  p-3 rounded-full  ${
-                      view === "grid" ? "bg-primary text-white" : ""
-                    }`}
+                    className={` text-muted-foreground  p-3 rounded-full  ${view === "grid" ? "bg-primary text-white" : ""
+                      }`}
                   >
                     <IoGrid size={22} />
                   </button>
@@ -752,7 +794,7 @@ const Ads = () => {
                       </div>
                     ) : (
                       <div
-                        className="col-span-12 sm:col-span-6 xl:col-span-4"
+                        className="col-span-6 sm:col-span-6 xl:col-span-4"
                         key={index}
                       >
                         <ProductCard item={item} handleLike={handleLike} />
