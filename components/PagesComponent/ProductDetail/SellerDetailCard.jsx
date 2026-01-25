@@ -142,11 +142,24 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
           </CustomLink>
         </div>
         <div className="border-b w-full"></div>
-        <div className="flex flex-wrap items-center gap-4 p-4 w-full">
+        
+        <div className="flex flex-col items-stretch gap-3 p-4 w-full">
+          
+          {productDetails?.user?.show_personal_details === 1 &&
+            productDetails?.user?.mobile && (
+              <Link
+                href={`tel:${productDetails?.user?.mobile}`}
+                className="bg-[#000] text-white p-3 rounded-md flex items-center gap-2 text-base font-medium justify-center w-full hover:bg-gray-800 transition-colors"
+              >
+                <BiPhoneCall size={21} />
+                <span>{t("Ligar")}</span>
+              </Link>
+            )}
+          {/* Botão Chat (Segundo) */}
           <button
             onClick={handleChat}
             disabled={IsStartingChat}
-            className="bg-[#000] text-white p-4 rounded-md flex items-center gap-2 text-base font-medium justify-center whitespace-nowrap [flex:1_1_47%]"
+            className="bg-[#000] text-white p-3 rounded-md flex items-center gap-2 text-base font-medium justify-center w-full hover:bg-[#5a7888] transition-colors disabled:opacity-70"
           >
             <IoChatboxEllipsesOutline size={22} />
             {IsStartingChat ? (
@@ -156,28 +169,10 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
             )}
           </button>
 
-          {productDetails?.user?.show_personal_details === 1 &&
-            productDetails?.user?.mobile && (
-              <Link
-                href={`tel:${productDetails?.user?.mobile}`}
-                className="bg-[#000] text-white p-4 rounded-md flex items-center gap-2 text-base font-medium justify-center whitespace-nowrap [flex:1_1_47%]"
-              >
-                <BiPhoneCall size={21} />
-                <span>{t("Ligar")}</span>
-              </Link>
-            )}
-          {isAllowedToMakeOffer && (
-            <button
-              onClick={handleMakeOffer}
-              className="bg-primary text-white p-4 rounded-md flex items-center gap-2 text-base font-medium justify-center whitespace-nowrap [flex:1_1_47%]"
-            >
-              <Gift size={21} />
-              {t("Fazer uma Oferta")}
-            </button>
-          )}
+          {/* Outros botões (Oferta / Job) */}
           {isJobCategory && (
             <button
-              className={`text-white p-4 rounded-md flex items-center gap-2 text-base font-medium justify-center whitespace-nowrap [flex:1_1_47%] ${
+              className={`text-white p-3 rounded-md flex items-center gap-2 text-base font-medium justify-center w-full ${
                 isApplied ? "bg-primary" : "bg-black"
               }`}
               disabled={isApplied}

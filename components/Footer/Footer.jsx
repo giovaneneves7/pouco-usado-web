@@ -13,6 +13,9 @@ import CustomImage from "../Common/CustomImage";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
+import googleDownload from "../../public/assets/Google Download.png";
+import appleDownload from "../../public/assets/iOS Download.png";
+
 export default function Footer() {
   const CurrentLanguage = useSelector(CurrentLanguageData);
   const settings = useSelector(settingsData);
@@ -21,7 +24,6 @@ export default function Footer() {
   const dispatch = useDispatch();
   const router = useRouter();
 
-  // Função para lidar com o clique no botão "Criar conta" na barra escura
   const handleCreateAccount = () => {
     if (IsLoggedin) {
       router.push("/ad-listing");
@@ -29,6 +31,8 @@ export default function Footer() {
       dispatch(setIsLoginOpen(true));
     }
   };
+
+  const showDownloadLinks = settings?.play_store_link || settings?.app_store_link;
 
   return (
     <footer>
@@ -48,6 +52,45 @@ export default function Footer() {
 
       <div className="bg-gray-100 text-gray-600 pt-12 pb-8">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px]">
+          
+          {showDownloadLinks && (
+            <div className="bg-orange-500 rounded-2xl p-6 md:p-10 mb-12 flex flex-col lg:flex-row items-center justify-between gap-6 shadow-sm">
+              <div className="text-center lg:text-left">
+                <h2 className="text-2xl md:text-3xl font-semibold text-white mb-2">
+                  {t("Experimente a mágica do App")} {settings?.company_name}
+                </h2>
+                <p className="text-orange-100 text-sm md:text-base">
+                  {t("Baixe nosso aplicativo e tenha o marketplace na palma da sua mão.")}
+                </p>
+              </div>
+              <div className="flex flex-wrap justify-center gap-4">
+                {settings?.play_store_link && (
+                  <Link href={settings.play_store_link} target="_blank" className="hover:scale-105 transition-transform">
+                    <CustomImage
+                      src={googleDownload}
+                      alt="Google Play"
+                      width={160}
+                      height={50}
+                      className="h-[50px] w-auto object-contain"
+                    />
+                  </Link>
+                )}
+                {settings?.app_store_link && (
+                  <Link href={settings.app_store_link} target="_blank" className="hover:scale-105 transition-transform">
+                    <CustomImage
+                      src={appleDownload}
+                      alt="App Store"
+                      width={160}
+                      height={50}
+                      className="h-[50px] w-auto object-contain"
+                    />
+                  </Link>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* Grid Principal do Footer */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-8 lg:gap-12">
             
             <div className="lg:col-span-4 space-y-4">

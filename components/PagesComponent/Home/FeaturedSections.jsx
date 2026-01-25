@@ -11,7 +11,7 @@ const SectionSlider = ({ data, handleLike }) => {
   const scroll = (direction) => {
     if (sliderRef.current) {
       const { current } = sliderRef;
-      const scrollAmount = 300; 
+      const scrollAmount = current.clientWidth / (window.innerWidth >= 1280 ? 5 : 3); 
       
       if (direction === "left") {
         current.scrollBy({ left: -scrollAmount, behavior: "smooth" });
@@ -46,7 +46,7 @@ const SectionSlider = ({ data, handleLike }) => {
         {data.map((item) => (
           <div 
             key={item?.id} 
-            className="w-60 sm:w-64 md:w-72 flex-shrink-0 h-full"
+            className="flex-shrink-0 h-full w-60 sm:w-64 lg:w-[calc(25%-12px)] xl:w-[calc(20%-13px)]"
           >
             <ProductCard item={item} handleLike={handleLike} />
           </div>

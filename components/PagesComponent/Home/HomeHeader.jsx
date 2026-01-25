@@ -206,9 +206,10 @@ const HomeHeader = () => {
                 <CustomImage
                   src={settings?.header_logo}
                   alt="logo"
-                  width={150}
+                  width={180}
                   height={45}
-                  className="h-[28px] xs:h-[35px] md:h-[40px] w-auto object-contain"
+                  // ALTERAÇÃO AQUI: Aumentado h-[40px] (mobile) e proporcionalmente nos outros breakpoints
+                  className="h-[40px] xs:h-[45px] md:h-[50px] w-auto object-contain"
                 />
               </CustomLink>
             </div>

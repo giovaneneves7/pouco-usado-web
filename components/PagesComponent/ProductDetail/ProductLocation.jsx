@@ -18,7 +18,7 @@ const ProductLocation = ({ productDetails }) => {
   return (
     <div className="flex flex-col border rounded-lg ">
       <div className="p-4">
-        <p className="font-bold">{t("postedIn")}</p>
+        <p className="font-bold">{t("Publicado em:")}</p>
       </div>
       <div className="border-b w-full"></div>
       <div className="flex flex-col p-4 gap-4">

@@ -87,7 +87,7 @@ const HomeMobileMenu = ({
         className="flex items-center gap-1 py-4"
       >
         <IoMdNotificationsOutline size={24} />
-        <span>{t("notifications")}</span>
+        <span>{t("Notificações")}</span>
       </CustomLink>
       <CustomLink href="/chat" className="flex items-center gap-1 py-4">
         <BiChat size={24} />
@@ -98,34 +98,34 @@ const HomeMobileMenu = ({
         className="flex items-center gap-1 py-4"
       >
         <BiDollarCircle size={24} />
-        <span>{t("subscription")}</span>
+        <span>{t("Assinatura")}</span>
       </CustomLink>
       <CustomLink href="/my-ads" className="flex items-center gap-1 py-4">
         <LiaAdSolid size={24} />
-        <span>{t("myAds")}</span>
+        <span>{t("Meus Anúncios")}</span>
       </CustomLink>
       <CustomLink href="/favorites" className="flex items-center gap-1 py-4">
         <LuHeart size={24} />
-        <span>{t("favorites")}</span>
+        <span>{t("Favoritos")}</span>
       </CustomLink>
       <CustomLink href="/transactions" className="flex items-center gap-1 py-4">
         <BiReceipt size={24} />
-        <span>{t("transaction")}</span>
+        <span>{t("Transações")}</span>
       </CustomLink>
       <CustomLink href="/reviews" className="flex items-center gap-1 py-4">
         <MdOutlineRateReview size={24} />
-        <span>{t("myReviews")}</span>
+        <span>{t("Minhas Avaliações")}</span>
       </CustomLink>
       <CustomLink
         href="/job-applications"
         className="flex items-center gap-1 py-4"
       >
         <MdWorkOutline size={24} />
-        <span>{t("jobApplications")}</span>
+        <span>{t("Vagas")}</span>
       </CustomLink>
       <button onClick={handleSignOut} className="flex items-center gap-1 py-4">
         <RiLogoutCircleLine size={24} />
-        <span>{t("signOut")}</span>
+        <span>{t("Sair")}</span>
       </button>
       <button
         onClick={handleDeleteAccount}
@@ -147,7 +147,7 @@ const HomeMobileMenu = ({
           <GiHamburgerMenu size={25} className="text-primary" />
         </button>
       </SheetTrigger>
-      <SheetContent className="[&>button:first-child]:hidden] p-0 overflow-y-auto">
+      <SheetContent side="left" className="[&>button:first-child]:hidden] p-0 overflow-y-auto">
         <SheetHeader className="p-4 border-b border">
           <SheetTitle>
             <CustomImage
@@ -215,7 +215,7 @@ const HomeMobileMenu = ({
             ) : (
               <IoIosAddCircleOutline size={18} />
             )}
-            <span>{t("adListing")}</span>
+            <span>{t("Anunciar Grátis")}</span>
           </button>
         </div>
 
@@ -226,13 +226,13 @@ const HomeMobileMenu = ({
                 value="menu"
                 className="flex-1 data-state-active:bg-primary"
               >
-                {t("menu")}
+                {t("Menu")}
               </TabsTrigger>
               <TabsTrigger
                 value="categories"
                 className="flex-1 data-state-active:bg-primary"
               >
-                {t("multipleCategories")}
+                {t("Categorias")}
               </TabsTrigger>
             </TabsList>
 
@@ -248,7 +248,7 @@ const HomeMobileMenu = ({
           navItems
         ) : showCategories ? (
           <div className="px-4 pb-4 flex flex-col gap-4">
-            <h1 className="font-medium">{t("multipleCategories")}</h1>
+            <h1 className="font-medium">{t("Categorias")}</h1>
             <FilterTree />
           </div>
         ) : null}
