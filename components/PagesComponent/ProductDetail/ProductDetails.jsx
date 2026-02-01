@@ -1,21 +1,22 @@
 "use client";
 import { useEffect, useState } from "react";
-import {
-  allItemApi,
-  getMyItemsApi,
-  setItemTotalClickApi,
-  manageFavouriteApi
+import { 
+  allItemApi, 
+  getMyItemsApi, 
+  setItemTotalClickApi, 
+  manageFavouriteApi 
 } from "@/utils/api";
 import ProductFeature from "./ProductFeature";
 import ProductDescription from "./ProductDescription";
 import SellerDetailCard from "./SellerDetailCard";
 import ProductLocation from "./ProductLocation";
 import SimilarProducts from "./SimilarProducts";
-// import AdsReportCard from "./AdsReportCard"; // Não é mais necessário se usarmos o Modal direto
+import ReportModal from "@/components/User/ReportModal"; 
 import { usePathname, useSearchParams } from "next/navigation";
+import { userSignUpData } from "@/redux/reducer/authSlice"; 
+import { setIsLoginOpen } from "@/redux/reducer/globalStateSlice"; 
 import Layout from "@/components/Layout/Layout";
 import ProductGallery from "./ProductGallery";
-import ReportModal from "@/components/User/ReportModal"; // Certifique-se que este import está correto
 import {
   getFilteredCustomFields,
   getYouTubeVideoId,
@@ -26,17 +27,15 @@ import PageLoader from "@/components/Common/PageLoader";
 import OpenInAppDrawer from "@/components/Common/OpenInAppDrawer";
 import { useDispatch, useSelector } from "react-redux";
 import { CurrentLanguageData } from "@/redux/reducer/languageSlice";
-import { userSignUpData } from "@/redux/reducer/authSlice";
-import { setIsLoginOpen } from "@/redux/reducer/globalStateSlice";
 import BreadCrumb from "@/components/BreadCrumb/BreadCrumb";
 import { setBreadcrumbPath } from "@/redux/reducer/breadCrumbSlice";
 import NoData from "@/components/EmptyStates/NoData";
-import {
-  Share2,
-  Heart,
-  Flag,
-  ShieldCheck,
-  ShieldAlert,
+import { 
+  Share2, 
+  Heart, 
+  Flag, 
+  ShieldCheck, 
+  ShieldAlert, 
   ChevronRight,
   MapPin,
   Calendar,
@@ -52,7 +51,7 @@ const ProductDetails = ({ slug }) => {
   const searchParams = useSearchParams();
   const isShare = searchParams.get("share") == "true" ? true : false;
   const isMyListing = pathName?.startsWith("/my-listing") ? true : false;
-
+  
   const [productDetails, setProductDetails] = useState(null);
   const [galleryImages, setGalleryImages] = useState([]);
   const [status, setStatus] = useState("");
@@ -96,7 +95,7 @@ const ProductDetails = ({ slug }) => {
       ])
     );
   };
-
+  
   const incrementViews = async (item_id) => {
     try {
       if (!item_id) return;
@@ -158,13 +157,13 @@ const ProductDetails = ({ slug }) => {
   const handleFavorite = async (e) => {
     e?.preventDefault();
     e?.stopPropagation();
-
+    
     try {
-      if (!userData) {
+      if (!userData) { 
         dispatch(setIsLoginOpen(true));
         return;
       }
-
+      
       const response = await manageFavouriteApi.manageFavouriteApi({
         item_id: productDetails?.id,
       });
@@ -208,153 +207,141 @@ const ProductDetails = ({ slug }) => {
           </div>
 
           <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px] mt-6 md:mt-8 pb-12">
-
+            
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
               {/* === ESQUERDA === */}
               <div className="lg:col-span-8 flex flex-col gap-8">
-
+                
+                {/* 1. Galeria */}
                 <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
                   <ProductGallery galleryImages={galleryImages} videoData={videoData} />
                 </div>
 
-                <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500 px-1">
-                  <span className="text-gray-400">Publicado em</span>
-                  <span className="font-semibold text-orange-500">
-                    {productDetails?.category?.translated_name || productDetails?.category?.name}
-                  </span>
-                  <ChevronRight size={16} className="text-gray-300" />
-                  <div className="flex items-center gap-1">
-                    <Calendar size={14} />
-                    <span>{productDetails?.created_at}</span>
-                  </div>
-                  <span className="mx-2 text-gray-300">|</span>
-                  <div className="flex items-center gap-1">
-                    <Hash size={14} />
-                    <span>ID: {productDetails?.id}</span>
-                  </div>
-                </div>
-
-                <div className="border-t pt-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">{t("Detalhes")}</h3>
-                  {filteredFields.length > 0 ? (
-                    <ProductFeature filteredFields={filteredFields} />
-                  ) : (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                      <div className="flex flex-col">
-                        <span className="text-xs text-gray-400 uppercase tracking-wider">Condição</span>
-                        <span className="font-medium text-gray-800">Usado</span>
-                      </div>
+                <div>
+                    <div className="flex flex-wrap items-center gap-1.5 text-xs sm:text-sm text-gray-500 mb-2">
+                       <span className="text-gray-400 font-medium">Publicado em</span>
+                       <span className="font-bold text-orange-600 cursor-pointer hover:underline">
+                         {productDetails?.category?.translated_name || productDetails?.category?.name}
+                       </span>
+                       <ChevronRight size={14} className="text-gray-300" />
+                       <span>{productDetails?.created_at}</span>
+                       <ChevronRight size={14} className="text-gray-300" />
+                       <span>ID: {productDetails?.id}</span>
                     </div>
-                  )}
+
+                    {/* Título Principal */}
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">
+                        {productDetails?.translated_item?.name || productDetails?.name}
+                    </h1>
+
+                    {/* Preço */}
+                    <div className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">
+                        {productDetails?.price ? `R$ ${productDetails.price}` : t("priceNotMentioned")}
+                    </div>
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">{t("Descrição do vendedor")}</h3>
-                  <ProductDescription productDetails={productDetails} />
+                   <h3 className="text-xl font-bold text-gray-800 mb-4">{t("Detalhes")}</h3>
+                   {filteredFields.length > 0 ? (
+                      <ProductFeature filteredFields={filteredFields} />
+                   ) : (
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                          <div className="flex flex-col">
+                             <span className="text-xs text-gray-400 uppercase tracking-wider">Condição</span>
+                             <span className="font-medium text-gray-800">Usado</span>
+                          </div>
+                      </div>
+                   )}
                 </div>
 
                 <div className="border-t pt-6">
-                  <h3 className="text-xl font-bold text-gray-800 mb-4">{t("Localização")}</h3>
-                  {/*<div className="mb-4 text-gray-600 flex items-center gap-2">
-                    <MapPin size={18} />
-                    {productDetails?.translated_address || productDetails?.address}
-                  </div>*/}
-                  <ProductLocation productDetails={productDetails} />
+                   <h3 className="text-xl font-bold text-gray-800 mb-4">{t("Descrição do vendedor")}</h3>
+                   <ProductDescription productDetails={productDetails} />
                 </div>
 
+                <div className="border-t pt-6">
+                   <h3 className="text-xl font-bold text-gray-800 mb-4">{t("Localização")}</h3>
+  
+                   <ProductLocation productDetails={productDetails} />
+                </div>
+
+                {/* Botões de Ação */}
                 <div className="flex flex-col sm:flex-row gap-4 mt-4 border-t pt-6">
-                  <button onClick={handleShare} className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-600 transition-all text-sm font-medium shadow-sm">
-                    <Share2 size={18} /> {t("Compartilhar")}
-                  </button>
-
-                  <button
-                    onClick={handleFavorite}
-                    className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 border rounded-full transition-all text-sm font-medium shadow-sm group ${productDetails?.is_liked
-                        ? "bg-red-50 border-red-200 text-red-600"
-                        : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
-                      }`}
-                  >
-                    <Heart
-                      size={18}
-                      fill={productDetails?.is_liked ? "currentColor" : "none"}
-                      className={productDetails?.is_liked ? "text-red-600" : "text-gray-600"}
-                    />
-                    <span className="ml-2">
-                      {productDetails?.is_liked ? t("Favoritado") : t("Favoritar")}
-                    </span>
-                  </button>
-
-                  <button
-                    onClick={handleReport}
-                    className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-600 transition-all text-sm font-medium shadow-sm"
-                  >
-                    <Flag size={18} /> {t("Denunciar")}
-                  </button>
+                    <button onClick={handleShare} className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-600 transition-all text-sm font-medium shadow-sm">
+                        <Share2 size={18} /> {t("Compartilhar")}
+                    </button>
+                    
+                    <button 
+                        onClick={handleFavorite} 
+                        className={`flex-1 flex items-center justify-center gap-2 px-6 py-3 border rounded-full transition-all text-sm font-medium shadow-sm group ${
+                            productDetails?.is_liked 
+                            ? "bg-red-50 border-red-200 text-red-600" 
+                            : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                        }`}
+                    >
+                        <Heart 
+                            size={18} 
+                            fill={productDetails?.is_liked ? "currentColor" : "none"}
+                            className={productDetails?.is_liked ? "text-red-600" : "text-gray-600"}
+                        /> 
+                        <span className="ml-2">
+                            {productDetails?.is_liked ? t("Favoritado") : t("Favoritar")}
+                        </span>
+                    </button>
+                    
+                    <button onClick={handleReport} className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-600 transition-all text-sm font-medium shadow-sm">
+                        <Flag size={18} /> {t("Denunciar")}
+                    </button>
                 </div>
 
               </div>
 
+              {/* === DIREITA (SIDEBAR) === */}
               <div className="lg:col-span-4 space-y-6">
-
-                <div className="lg:hidden space-y-2 mb-4">
-                  <h1 className="text-xl font-bold text-gray-900 leading-tight">
-                    {productDetails?.translated_item?.name || productDetails?.name}
-                  </h1>
-                  <p className="text-2xl font-extrabold text-gray-900">
-                    {productDetails?.price ? `R$ ${productDetails.price}` : t("priceNotMentioned")}
-                  </p>
-                </div>
-
+                
+                {/* Removido o card de Título/Preço do Desktop pois agora está na esquerda */}
+                
                 <div className="sticky top-24 space-y-6">
+                    
+                    {!isMyListing && (
+                        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                           <SellerDetailCard
+                              productDetails={productDetails}
+                              setProductDetails={setProductDetails}
+                           />
+                        </div>
+                    )}
 
-                  <div className="hidden lg:block bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h1 className="text-xl font-bold text-gray-900 mb-3 leading-snug">
-                      {productDetails?.translated_item?.name || productDetails?.name}
-                    </h1>
-                    <div className="text-3xl font-black text-gray-900">
-                      {productDetails?.price ? `R$ ${productDetails.price}` : t("priceNotMentioned")}
+                    <div className="flex items-center justify-center p-4">
+                        <span className="text-xs text-gray-400 uppercase tracking-widest">Publicidade</span>
                     </div>
-                  </div>
 
-                  {!isMyListing && (
-                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                      <SellerDetailCard
-                        productDetails={productDetails}
-                        setProductDetails={setProductDetails}
-                      />
+                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                        <h3 className="font-bold text-gray-900 mb-4 text-base">
+                            {t("Dicas de segurança")}
+                        </h3>
+                        <ul className="space-y-4">
+                            <li className="flex gap-3 items-start">
+                                <ShieldCheck size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                <span className="text-xs text-gray-600 leading-relaxed">
+                                    Nunca pague antes de conhecer o pessoalmente
+                                </span>
+                            </li>
+                            <li className="flex gap-3 items-start">
+                                <ShieldAlert size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                <span className="text-xs text-gray-600 leading-relaxed">
+                                    Desconfie de muitas facilidades e preços muito abaixo do mercado
+                                </span>
+                            </li>
+                            <li className="flex gap-3 items-start">
+                                <ShieldCheck size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                <span className="text-xs text-gray-600 leading-relaxed">
+                                    Sempre marque encontros em lugares públicos com bastante movimentação
+                                </span>
+                            </li>
+                        </ul>
                     </div>
-                  )}
-
-                  <div className="flex items-center justify-center p-4">
-                    <span className="text-xs text-gray-400 uppercase tracking-widest">Publicidade</span>
-                  </div>
-
-                  <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                    <h3 className="font-bold text-gray-900 mb-4 text-base">
-                      {t("Dicas de segurança")}
-                    </h3>
-                    <ul className="space-y-4">
-                      <li className="flex gap-3 items-start">
-                        <ShieldCheck size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-xs text-gray-600 leading-relaxed">
-                          Nunca pague antes de conhecer o pessoalmente
-                        </span>
-                      </li>
-                      <li className="flex gap-3 items-start">
-                        <ShieldAlert size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-xs text-gray-600 leading-relaxed">
-                          Desconfie de muitas facilidades e preços muito abaixo do mercado
-                        </span>
-                      </li>
-                      <li className="flex gap-3 items-start">
-                        <ShieldCheck size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                        <span className="text-xs text-gray-600 leading-relaxed">
-                          Sempre marque encontros em lugares públicos com bastante movimentação
-                        </span>
-                      </li>
-                    </ul>
-                  </div>
 
                 </div>
               </div>
@@ -369,9 +356,9 @@ const ProductDetails = ({ slug }) => {
           </div>
 
           <OpenInAppDrawer
-            isOpen={isOpenInApp}
-            setIsOpen={setIsOpenInApp}
-            productDetails={productDetails}
+             isOpen={isOpenInApp}
+             setIsOpen={setIsOpenInApp}
+             productDetails={productDetails}
           />
 
           <ReportModal

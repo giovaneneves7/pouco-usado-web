@@ -101,6 +101,21 @@ const AdsListing = () => {
     .join(",");
   let lastItemId = categoryPath[categoryPath.length - 1]?.id;
 
+  const createSlug = (text) => {
+    if (!text) return "";
+    return text
+      .toString()
+      .toLowerCase()
+      .normalize("NFD") 
+      .replace(/[\u0300-\u036f]/g, "") 
+      .trim()
+      .replace(/\s+/g, "-") 
+      .replace(/[^\w\-]+/g, "")
+      .replace(/\-\-+/g, "-")
+      .substring(0, 80) 
+      .replace(/-+$/, ""); 
+  };
+
   useEffect(() => {
     if (step === 1) {
       handleFetchCategories();
@@ -114,7 +129,6 @@ const AdsListing = () => {
   }, [allCategoryIdsString, CurrentLanguage.id]);
 
   useEffect(() => {
-    // Update category path translations when language changes
     if (categoryPath.length > 0) {
       const lastCategoryId = categoryPath[categoryPath.length - 1]?.id;
       if (lastCategoryId) {
@@ -251,7 +265,7 @@ const AdsListing = () => {
       setStep(3);
     }
   };
-  const SLUG_RE = /^[a-z0-9-]+$/i;
+  
   const isEmpty = (x) => !x || !x.toString().trim();
   const isNegative = (n) => Number(n) < 0;
 
@@ -260,9 +274,7 @@ const AdsListing = () => {
       name,
       description,
       price,
-      slug,
       contact,
-      video_link,
       min_salary,
       max_salary,
       country_code,
@@ -277,11 +289,10 @@ const AdsListing = () => {
     }
     // Step 2: Get data for default (selected) language
     if (isEmpty(name) || isEmpty(description) || isEmpty(contact)) {
-      toast.error(t("completeDetails")); // Title, desc, phone required
+      toast.error(t("completeDetails"));
       return setStep(2);
     }
 
-    // ✅ Validate phone number ONLY if user entered one as it is optional
     if (Boolean(contact) && !isValidPhoneNumber(`+${country_code}${contact}`)) {
       toast.error(t("invalidPhoneNumber"));
       return setStep(2);
@@ -312,25 +323,13 @@ const AdsListing = () => {
       }
     } else {
       if (!isPriceOptional && isEmpty(price)) {
-        toast.error(t("completeDetails")); // Price is required
+        toast.error(t("completeDetails"));
         return setStep(2);
       }
       if (!isEmpty(price) && isNegative(price)) {
         toast.error(t("enterValidPrice"));
         return setStep(2);
       }
-    }
-
-    // Step 4: Video URL check
-    if (!isEmpty(video_link) && !isValidURL(video_link)) {
-      toast.error(t("enterValidUrl"));
-      return setStep(2);
-    }
-
-    // Step 5: Slug validation
-    if (!isEmpty(slug) && !SLUG_RE.test(slug.trim())) {
-      toast.error(t("addValidSlug"));
-      return setStep(2);
     }
 
     if (
@@ -376,16 +375,16 @@ const AdsListing = () => {
       defaultLangId
     );
 
+    const generatedSlug = createSlug(defaultDetails.name);
+
     const allData = {
       name: defaultDetails.name,
-      slug: defaultDetails.slug.trim(),
+      slug: generatedSlug, 
       description: defaultDetails?.description,
       category_id: catId,
       all_category_ids: allCategoryIdsString,
       price: defaultDetails.price,
       contact: defaultDetails.contact,
-      video_link: defaultDetails?.video_link,
-      // custom_fields: transformedCustomFields,
       image: uploadedImages[0],
       gallery_images: otherImages,
       address: location?.address,
@@ -405,7 +404,6 @@ const AdsListing = () => {
       region_code: defaultDetails?.region_code?.toUpperCase() || "",
     };
     if (is_job_category) {
-      // Only add salary fields if they're provided
       if (defaultDetails.min_salary) {
         allData.min_salary = defaultDetails.min_salary;
       }
@@ -451,8 +449,8 @@ const AdsListing = () => {
       });
       const { data } = response.data;
       setCategories((prev) => [...prev, ...data.data]);
-      setCurrentPage(data?.current_page); // Update the current page
-      setLastPage(data?.last_page); // Update the current page
+      setCurrentPage(data?.current_page);
+      setLastPage(data?.last_page);
     } catch (error) {
       console.error("Error:", error);
     } finally {
@@ -520,7 +518,7 @@ const AdsListing = () => {
                   }`}
                   onClick={() => handleTabClick(1)}
                 >
-                  {t("selectedCategory")}
+                  {t("Categoria Selecionada")}
                 </div>
                 <div
                   className={`transition-all duration-300 p-2 cursor-pointer ${
@@ -569,19 +567,19 @@ const AdsListing = () => {
                 </div>
               </div>
 
-              {(step == 2 || (step === 3 && hasTextbox)) && (
+              {/*{(step == 2 || (step === 3 && hasTextbox)) && (
                 <AdLanguageSelector
                   langId={langId}
                   setLangId={setLangId}
                   languages={languages}
                   setTranslations={setTranslations}
                 />
-              )}
+              )}*/}
             </div>
 
             {(step == 1 || step == 2) && categoryPath?.length > 0 && (
               <div className="flex flex-col gap-2">
-                <p className="font-medium text-xl">{t("selectedCategory")}</p>
+                <p className="font-medium text-xl">{t("Categoria Selecionada")}</p>
                 <div className="flex">
                   {categoryPath?.map((item, index) => {
                     const shouldShowComma =

@@ -117,7 +117,7 @@ const ProductGallery = ({ galleryImages, videoData }) => {
               alt="Product Detail"
               width={870}
               height={500}
-              className="h-full w-full object-center object-contain rounded-lg aspect-[870/500] cursor-pointer"
+              className="h-full p-4 w-full object-center object-contain rounded-lg aspect-[870/500] cursor-pointer"
             />
           </PhotoView>
         )}

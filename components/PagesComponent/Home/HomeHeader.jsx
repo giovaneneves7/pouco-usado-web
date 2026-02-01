@@ -1,14 +1,11 @@
 "use client";
-import LanguageDropdown from "@/components/Common/LanguageDropdown";
-import { CurrentLanguageData } from "@/redux/reducer/languageSlice";
 import { getIsFreAdListing, settingsData } from "@/redux/reducer/settingSlice";
-import { t, truncate } from "@/utils";
+import { t } from "@/utils";
 import CustomLink from "@/components/Common/CustomLink";
 import { useSelector } from "react-redux";
 import { FiHeart, FiMessageSquare, FiTarget } from "react-icons/fi";
-import { GrLocation } from "react-icons/gr";
 import { getCityData } from "@/redux/reducer/locationSlice";
-import HomeMobileMenu from "./HomeMobileMenu.jsx";
+import HomeMobileMenu from "./HomeMobileMenu.jsx"; 
 import MailSentSuccessModal from "@/components/Auth/MailSentSuccessModal.jsx";
 import { useState } from "react";
 import {
@@ -16,7 +13,6 @@ import {
   logoutSuccess,
   userSignUpData,
 } from "@/redux/reducer/authSlice.js";
-import ProfileDropdown from "./ProfileDropdown.jsx";
 import { toast } from "sonner";
 import FirebaseData from "@/utils/Firebase.js";
 import {
@@ -34,7 +30,7 @@ import { deleteUserApi, getLimitsApi, logoutApi } from "@/utils/api.js";
 import { useMediaQuery } from "usehooks-ts";
 import UnauthorizedModal from "@/components/Auth/UnauthorizedModal.jsx";
 import CustomImage from "@/components/Common/CustomImage.jsx";
-import { Loader2, UserCircle } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { useNavigate } from "@/components/Common/useNavigate.jsx";
 import { usePathname } from "next/navigation.js";
 import { Skeleton } from "@/components/ui/skeleton.jsx";
@@ -208,7 +204,6 @@ const HomeHeader = () => {
                   alt="logo"
                   width={180}
                   height={45}
-                  // ALTERAÇÃO AQUI: Aumentado h-[40px] (mobile) e proporcionalmente nos outros breakpoints
                   className="h-[40px] xs:h-[45px] md:h-[50px] w-auto object-contain"
                 />
               </CustomLink>
@@ -261,49 +256,25 @@ const HomeHeader = () => {
                   <span className="hidden xl:inline">Anunciar grátis</span>
                   <span className="xl:hidden">Anunciar</span>
                 </button>
-
-                {IsLoggedin ? (
-                  <ProfileDropdown setIsLogout={setIsLogout} IsLogout={IsLogout} />
-                ) : (
-                  <div
-                    className="flex items-center gap-2 border border-gray-300 rounded-full py-1.5 px-3 hover:shadow-md transition-all bg-white cursor-pointer"
-                    onClick={() => setIsLoginOpen(true)}
-                  >
-                    <UserCircle size={24} className="text-gray-500" />
-                    <div className="flex flex-col gap-[3px]">
-                      <span className="w-4 h-[1px] bg-gray-600"></span>
-                      <span className="w-4 h-[1px] bg-gray-600"></span>
-                      <span className="w-4 h-[1px] bg-gray-600"></span>
-                    </div>
-                  </div>
-                )}
               </div>
             )}
 
-            {!isLargeScreen && (
-              <div
-                className="flex items-center gap-1 xs:gap-2 border border-gray-300 rounded-full py-1 px-2 xs:px-3 hover:shadow-md transition-all bg-white cursor-pointer shrink-0"
-                onClick={() => !IsLoggedin && setIsLoginOpen(true)}
-              >
-                <div className="text-gray-500 shrink-0">
-                  {IsLoggedin && userData?.profile ? (
-                    <img src={userData.profile} className="w-5 h-5 xs:w-6 xs:h-6 rounded-full object-cover" alt="user" />
-                  ) : (
-                    <UserCircle size={20} className="xs:w-6 xs:h-6" />
-                  )}
-                </div>
-
-                <HomeMobileMenu
-                  setIsLocationModalOpen={setIsLocationModalOpen}
-                  setIsRegisterModalOpen={setIsRegisterModalOpen}
-                  setIsLogout={setIsLogout}
-                  locationText={locationText}
-                  handleAdListing={handleAdListing}
-                  IsAdListingClicked={IsAdListingClicked}
-                  setManageDeleteAccount={setManageDeleteAccount}
-                />
-              </div>
-            )}
+            {/* Menu Hambúrguer Unificado (Renderizado SEMPRE: PC e Mobile) */}
+            {/* O botão completo (Hambúrguer + Avatar) é desenhado DENTRO do HomeMobileMenu */}
+            <div className="flex-shrink-0 ml-2">
+              <HomeMobileMenu
+                setIsLocationModalOpen={setIsLocationModalOpen}
+                setIsRegisterModalOpen={setIsRegisterModalOpen}
+                setIsLogout={setIsLogout}
+                locationText={locationText}
+                handleAdListing={handleAdListing}
+                IsAdListingClicked={IsAdListingClicked}
+                setManageDeleteAccount={setManageDeleteAccount}
+                // Passando dados para o botão funcionar
+                userData={userData}
+                IsLoggedin={IsLoggedin}
+              />
+            </div>
           </div>
         </nav>
       </header>
@@ -354,30 +325,28 @@ const HomeHeader = () => {
         description={t("youNeedToUpdateProfile")}
         confirmText={t("yes")}
       />
-      {!isLargeScreen && (
-        <ReusableAlertDialog
-          open={manageDeleteAccount?.IsDeleteAccount}
-          onCancel={() =>
-            setManageDeleteAccount((prev) => ({
-              ...prev,
-              IsDeleteAccount: false,
-            }))
-          }
-          onConfirm={handleDeleteAcc}
-          title={t("areYouSure")}
-          description={
-            <ul className="list-disc list-inside mt-2">
-              <li>{t("adsAndTransactionWillBeDeleted")}</li>
-              <li>{t("accountsDetailsWillNotRecovered")}</li>
-              <li>{t("subWillBeCancelled")}</li>
-              <li>{t("savedMesgWillBeLost")}</li>
-            </ul>
-          }
-          cancelText={t("cancel")}
-          confirmText={t("yes")}
-          confirmDisabled={manageDeleteAccount?.IsDeleting}
-        />
-      )}
+      <ReusableAlertDialog
+        open={manageDeleteAccount?.IsDeleteAccount}
+        onCancel={() =>
+          setManageDeleteAccount((prev) => ({
+            ...prev,
+            IsDeleteAccount: false,
+          }))
+        }
+        onConfirm={handleDeleteAcc}
+        title={t("areYouSure")}
+        description={
+          <ul className="list-disc list-inside mt-2">
+            <li>{t("adsAndTransactionWillBeDeleted")}</li>
+            <li>{t("accountsDetailsWillNotRecovered")}</li>
+            <li>{t("subWillBeCancelled")}</li>
+            <li>{t("savedMesgWillBeLost")}</li>
+          </ul>
+        }
+        cancelText={t("cancel")}
+        confirmText={t("yes")}
+        confirmDisabled={manageDeleteAccount?.IsDeleting}
+      />
 
       <LocationModal
         key={`${IsLocationModalOpen}-location-modal`}

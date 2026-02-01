@@ -108,7 +108,7 @@ const PopularCategories = () => {
             {cateData.map((item) => (
               <CarouselItem
                 key={item?.id}
-                className="basis-[20%] sm:basis-[20%] md:basis-[20%] lg:basis-[20%] xl:basis-[20%] 2xl:basis-[20%] pl-2 md:pl-[30px]"
+                className="basis-[20%] md:basis-[20%] lg:basis-[14.28%] xl:basis-[12.5%] 2xl:basis-[12.5%] pl-2 md:pl-[30px]"
               >
                 <PopularCategoryCard item={item} />
               </CarouselItem>

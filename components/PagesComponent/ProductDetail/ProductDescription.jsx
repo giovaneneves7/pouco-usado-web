@@ -27,7 +27,6 @@ const ProductDescription = ({ productDetails }) => {
 
   return (
     <div className="flex flex-col gap-4">
-      <span className="text-2xl font-medium">{t("description")}</span>
       <div
         className={`${
           showFullDescription ? "h-[100%]" : "max-h-[72px]"

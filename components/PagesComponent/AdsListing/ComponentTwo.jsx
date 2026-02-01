@@ -5,7 +5,7 @@ import {
   getCurrencyPosition,
   getCurrencySymbol,
 } from "@/redux/reducer/settingSlice";
-import { generateSlug, t } from "@/utils";
+import { t } from "@/utils"; 
 import PhoneInput from "react-phone-input-2";
 import { useSelector } from "react-redux";
 
@@ -33,11 +33,6 @@ const ComponentTwo = ({
         ...prev[langId],
         [field]: value,
       };
-
-      // ✅ Only auto-generate slug if default language and field is title
-      if (field === "name" && langId === defaultLangId) {
-        updatedLangData.slug = generateSlug(value);
-      }
 
       return {
         ...prev,
@@ -72,15 +67,15 @@ const ComponentTwo = ({
           htmlFor="title"
           className={langId === defaultLangId ? "requiredInputLabel" : ""}
         >
-          {t("title")}
+          {t("Título")}
         </Label>
         <Input
           type="text"
           name="title"
           id="title"
-          placeholder={t("enterTitle")}
+          placeholder={t("Insira o título")}
           value={current.name || ""}
-          onChange={handleField("name")} //here send param as the one we need to send to the api
+          onChange={handleField("name")}
         />
       </div>
       <div className="flex flex-col gap-2">
@@ -88,14 +83,14 @@ const ComponentTwo = ({
           htmlFor="description"
           className={langId === defaultLangId ? "requiredInputLabel" : ""}
         >
-          {t("description")}
+          {t("Descrição")}
         </Label>
         <Textarea
           name="description"
           id="description"
           cols="30"
           rows="3"
-          placeholder={t("enterDescription")}
+          placeholder={t("Insira a descrição")}
           className="border rounded-md px-4 py-2 outline-none"
           value={current.description || ""}
           onChange={handleField("description")}
@@ -142,7 +137,7 @@ const ComponentTwo = ({
                     : ""
                 }
               >
-                {t("price")}
+                {t("Preço")}
               </Label>
 
               <Input
@@ -175,33 +170,7 @@ const ComponentTwo = ({
               enableLongNumbers
             />
           </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="videoLink">{t("videoLink")}</Label>
-            <Input
-              type="text"
-              name="videoLink"
-              id="videoLink"
-              placeholder={t("enterAdditionalLinks")}
-              value={current.video_link || ""}
-              onChange={handleField("video_link")}
-            />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Label htmlFor="slug">
-              {t("slug")}{" "}
-              <span className="text-muted-foreground text-xs">
-                ({t("allowedSlug")})
-              </span>
-            </Label>
-            <Input
-              type="text"
-              name="slug"
-              id="slug"
-              placeholder={t("enterSlug")}
-              value={current.slug || ""}
-              onChange={handleField("slug")}
-            />
-          </div>
+          
         </>
       )}
       <div className="flex justify-end gap-3">

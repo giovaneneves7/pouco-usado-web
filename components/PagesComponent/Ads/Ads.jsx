@@ -43,7 +43,6 @@ import {
   SheetTitle,
   SheetTrigger
 } from "@/components/ui/sheet";
-// Adicionado SlidersHorizontal para o ícone igual da imagem
 import { LuFilter, SlidersHorizontal } from "lucide-react"; 
 
 const Ads = () => {
@@ -499,7 +498,6 @@ const Ads = () => {
       <BreadCrumb />
       <div className="container mt-8 relative">
 
-        {/* NOVA BARRA DE FILTROS MOBILE (GRID 2 COLUNAS) */}
         <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-t mb-4 -mx-4 sm:-mx-6">
             <div className="grid grid-cols-2 h-12 divide-x divide-gray-200">
                 {/* Lado Esquerdo: Filtros */}
@@ -653,7 +651,7 @@ const Ads = () => {
                       className="px-4 text-base font-normal py-2 rounded-full flex items-center gap-2 bg-muted"
                     >
                       <span>
-                        {t("search")}: {query}
+                        {t("Pesquisar")}: {query}
                       </span>
                       <IoIosCloseCircle
                         size={22}
@@ -702,7 +700,7 @@ const Ads = () => {
                       className="px-4 text-base font-normal py-2 rounded-full flex items-center gap-2 bg-muted"
                     >
                       <span>
-                        {t("datePosted")}: {postedSince}
+                        {t("Data Publicação")}: {postedSince}
                       </span>
                       <IoIosCloseCircle
                         size={22}

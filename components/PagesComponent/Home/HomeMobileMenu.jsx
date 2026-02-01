@@ -10,7 +10,6 @@ import {
 import { t } from "@/utils";
 import { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
-import LanguageDropdown from "../../Common/LanguageDropdown";
 import { GrLocation } from "react-icons/gr";
 import {
   IoIosAddCircleOutline,
@@ -138,8 +137,8 @@ const HomeMobileMenu = ({
   );
 
   return (
-    <Sheet open={isOpen} onOpenChange={setIsOpen} className="lg:hidden">
-      <SheetTrigger asChild className="lg:hidden">
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
+      <SheetTrigger asChild>
         <button
           id="hamburg"
           className="text-2xl cursor-pointer p-1"
@@ -147,111 +146,122 @@ const HomeMobileMenu = ({
           <GiHamburgerMenu size={25} className="text-primary" />
         </button>
       </SheetTrigger>
-      <SheetContent side="left" className="[&>button:first-child]:hidden] p-0 overflow-y-auto">
-        <SheetHeader className="p-4 border-b border">
-          <SheetTitle>
-            <CustomImage
-              src={settings?.header_logo}
-              width={195}
-              height={92}
-              alt="Logo"
-              className="w-full h-[52px] object-contain ltr:object-left rtl:object-right max-w-[195px]"
-            />
+      
+      <SheetContent side="right" className="[&>button:first-child]:hidden] p-0 overflow-y-auto w-full sm:max-w-md md:max-w-lg">
+        <SheetHeader className="p-5 border-b border-gray-100 text-left">
+          <SheetTitle className="text-3xl font-bold text-gray-800">
+            {t("Menu")}
           </SheetTitle>
-          <SheetDescription className="sr-only"></SheetDescription>
+          <SheetDescription className="sr-only">Menu principal</SheetDescription>
         </SheetHeader>
-        <div className="p-4 flex flex-col gap-4">
-          <div className="flex items-center justify-between gap-3">
-            {UserData ? (
-              <CustomLink href="/profile" className="flex items-center gap-2">
-                <CustomImage
-                  src={UserData?.profile}
-                  width={48}
-                  height={48}
-                  alt={UserData?.name}
-                  className="rounded-full size-12 aspect-square object-cover border"
-                  onClick={() => setIsOpen(false)}
-                />
-                <p
-                  className="line-clamp-2"
-                  title={UserData?.name}
-                  onClick={() => setIsOpen(false)}
-                >
-                  {UserData?.name}
-                </p>
-              </CustomLink>
-            ) : (
-              <div className="flex items-center gap-2">
-                <button onClick={handleLogin}>{t("login")}</button>
-                <span className="border-l h-6 self-center"></span>
-                <button onClick={handleRegister}>{t("register")}</button>
-              </div>
-            )}
-            <div className="flex-shrink-0">
-              <LanguageDropdown />
+
+        <div className="p-5 flex flex-col gap-6 bg-white">
+          
+          <div className="flex items-start justify-between w-full">
+            <div className="flex items-center gap-3">
+                {UserData ? (
+                  <CustomLink href="/profile" className="flex items-center gap-3 group">
+                    <div className="relative">
+                        <CustomImage
+                        src={UserData?.profile}
+                        width={56}
+                        height={56}
+                        alt={UserData?.name}
+                        className="rounded-full w-14 h-14 object-cover border-2 border-gray-100 group-hover:border-primary transition-colors"
+                        onClick={() => setIsOpen(false)}
+                        />
+                    </div>
+                    <div className="flex flex-col">
+                        <p
+                        className="font-bold text-lg text-gray-900 leading-tight group-hover:text-primary transition-colors"
+                        onClick={() => setIsOpen(false)}
+                        >
+                        {UserData?.name}
+                        </p>
+                    </div>
+                  </CustomLink>
+                ) : (
+                  <div className="flex items-center gap-3">
+                    <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
+                        <GiHamburgerMenu size={24} />
+                    </div>
+                    <div className="flex flex-col">
+                        <p className="font-bold text-lg text-gray-900">{t("Bem-vindo")}</p>
+                        <div className="flex items-center gap-1 text-sm text-primary font-medium">
+                            <button onClick={handleLogin} className="hover:underline">{t("login")}</button>
+                            <span>/</span>
+                            <button onClick={handleRegister} className="hover:underline">{t("register")}</button>
+                        </div>
+                    </div>
+                  </div>
+                )}
             </div>
+            
           </div>
 
           <div
-            className="flex items-center gap-1 cursor-pointer"
+            className="flex items-center gap-2 text-gray-600 cursor-pointer -mt-2"
             onClick={openLocationEditModal}
           >
-            <GrLocation size={16} className="flex-shrink-0" />
+            <GrLocation size={18} className="flex-shrink-0 text-gray-500" />
             <p
-              className="line-clamp-2"
+              className="text-sm font-medium leading-snug line-clamp-1"
               title={locationText ? locationText : t("addLocation")}
             >
-              {locationText ? locationText : t("addLocation")}
+              {locationText ? locationText : t("Adicionar localização")}
             </p>
           </div>
 
           <button
-            className="flex items-center justify-center gap-2 bg-primary py-2 px-3 text-white rounded-md"
+            className="w-full flex items-center justify-center gap-2 bg-gray-900 hover:bg-gray-800 text-white py-3.5 px-4 rounded-xl font-semibold transition-all shadow-sm active:scale-[0.98]"
             disabled={IsAdListingClicked}
             onClick={handleAdListing}
           >
             {IsAdListingClicked ? (
-              <Loader2 size={18} className="animate-spin" />
+              <Loader2 size={20} className="animate-spin" />
             ) : (
-              <IoIosAddCircleOutline size={18} />
+              <IoIosAddCircleOutline size={22} />
             )}
             <span>{t("Anunciar Grátis")}</span>
           </button>
         </div>
 
-        {showMenu && showCategories ? (
-          <Tabs defaultValue="menu">
-            <TabsList className="flex items-center justify-between bg-muted rounded-none">
-              <TabsTrigger
-                value="menu"
-                className="flex-1 data-state-active:bg-primary"
-              >
-                {t("Menu")}
-              </TabsTrigger>
-              <TabsTrigger
-                value="categories"
-                className="flex-1 data-state-active:bg-primary"
-              >
-                {t("Categorias")}
-              </TabsTrigger>
-            </TabsList>
+        {/* Abas ou Lista de Links */}
+        <div className="border-t border-gray-100">
+            {showMenu && showCategories ? (
+            <Tabs defaultValue="menu" className="w-full">
+                <TabsList className="w-full flex h-12 bg-gray-50 p-1">
+                <TabsTrigger
+                    value="menu"
+                    className="flex-1 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm text-gray-600 font-medium"
+                >
+                    {t("Menu")}
+                </TabsTrigger>
+                <TabsTrigger
+                    value="categories"
+                    className="flex-1 rounded-md data-[state=active]:bg-white data-[state=active]:shadow-sm text-gray-600 font-medium"
+                >
+                    {t("Categorias")}
+                </TabsTrigger>
+                </TabsList>
 
-            <TabsContent value="menu">
-              {navItems}
-            </TabsContent>
+                <TabsContent value="menu" className="mt-0">
+                {navItems}
+                </TabsContent>
 
-            <TabsContent value="categories" className="mt-4 px-4 pb-4">
-              <FilterTree />
-            </TabsContent>
-          </Tabs>
-        ) : showMenu ? (
-          navItems
-        ) : showCategories ? (
-          <div className="px-4 pb-4 flex flex-col gap-4">
-            <h1 className="font-medium">{t("Categorias")}</h1>
-            <FilterTree />
-          </div>
-        ) : null}
+                <TabsContent value="categories" className="mt-0 px-4 pb-4 pt-4">
+                <FilterTree />
+                </TabsContent>
+            </Tabs>
+            ) : showMenu ? (
+            navItems
+            ) : showCategories ? (
+            <div className="px-4 pb-4 pt-4 flex flex-col gap-4">
+                <h1 className="font-bold text-gray-900 px-2">{t("Categorias")}</h1>
+                <FilterTree />
+            </div>
+            ) : null}
+        </div>
       </SheetContent>
     </Sheet>
   );

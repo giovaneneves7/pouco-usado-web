@@ -80,7 +80,7 @@ const ProductDetailPage = async ({ params, searchParams }) => {
         url: `${process.env.NEXT_PUBLIC_WEB_URL}/ad-details/${product?.slug}`,
         category: {
           "@type": "Thing",
-          name: product?.category?.translated_name || "General Category", // Default category name
+          name: product?.category?.translated_name || "Categoria Geral", 
         },
         ...(product?.price && {
           offers: {
