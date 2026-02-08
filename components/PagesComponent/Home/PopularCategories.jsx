@@ -36,10 +36,15 @@ const PopularCategories = () => {
       return;
     }
     setCurrent(api.selectedScrollSnap());
+
     api.on("select", () => {
       setCurrent(api.selectedScrollSnap());
+
+      if (!api.canScrollNext() && catCurrentPage < catLastPage && !isCatLoadMore) {
+         getCategories(catCurrentPage + 1);
+      }
     });
-  }, [api, cateData.length]);
+  }, [api, cateData.length, catCurrentPage, catLastPage, isCatLoadMore]); 
 
   const handleNext = async () => {
     if (api && api.canScrollNext()) {
@@ -57,11 +62,12 @@ const PopularCategories = () => {
   ) : (
     cateData && cateData.length > 0 && (
       <section className="container mt-12">
-        <div className="space-between">
+        <div className="flex items-center justify-between"> 
           <h5 className="text-xl sm:text-2xl font-medium">
             {t("Categorias Populares")}
           </h5>
-          <div className="flex items-center justify-center gap-2 sm:gap-4">
+          
+          <div className="hidden md:flex items-center justify-center gap-2 sm:gap-4">
             <button
               onClick={() => api && api.scrollTo(current - 1)}
               className={`bg-primary p-1 sm:p-2 rounded-full ${
@@ -94,6 +100,7 @@ const PopularCategories = () => {
             </button>
           </div>
         </div>
+        
         <Carousel
           key={isRTL ? "rtl" : "ltr"}
           className="w-full mt-6"
@@ -102,13 +109,14 @@ const PopularCategories = () => {
             align: "start",
             containScroll: "trim",
             direction: isRTL ? "rtl" : "ltr",
+            dragFree: true, 
           }}
         >
           <CarouselContent className="-ml-2 md:-ml-[30px]">
             {cateData.map((item) => (
               <CarouselItem
                 key={item?.id}
-                className="basis-[20%] md:basis-[20%] lg:basis-[14.28%] xl:basis-[12.5%] 2xl:basis-[12.5%] pl-2 md:pl-[30px]"
+                className="basis-[30%] sm:basis-[30%] md:basis-[25%] lg:basis-[14.28%] xl:basis-[12.5%] 2xl:basis-[12.5%] pl-2 md:pl-[30px]"
               >
                 <PopularCategoryCard item={item} />
               </CarouselItem>

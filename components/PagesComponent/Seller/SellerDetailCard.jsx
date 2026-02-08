@@ -77,7 +77,7 @@ const SellerDetailCard = ({ seller, ratings }) => {
       {seller?.show_personal_details === 1 &&
         (seller?.email || seller?.mobile) && (
           <div className="border-t p-4 flex flex-col gap-4">
-            {seller?.email && (
+            {/*seller?.email && (
               <div className="flex items-center gap-2">
                 <div className="p-3 bg-muted rounded-md border">
                   <MdOutlineMailOutline className="size-4" />
@@ -89,7 +89,7 @@ const SellerDetailCard = ({ seller, ratings }) => {
                   {seller?.email}
                 </CustomLink>
               </div>
-            )}
+            )}*/}
 
             {seller?.mobile && (
               <div className="flex items-center gap-2">

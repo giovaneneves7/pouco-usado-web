@@ -259,8 +259,7 @@ const HomeHeader = () => {
               </div>
             )}
 
-            {/* Menu Hambúrguer Unificado (Renderizado SEMPRE: PC e Mobile) */}
-            {/* O botão completo (Hambúrguer + Avatar) é desenhado DENTRO do HomeMobileMenu */}
+            {/* Menu Hambúrguer (Renderizado SEMPRE) */}
             <div className="flex-shrink-0 ml-2">
               <HomeMobileMenu
                 setIsLocationModalOpen={setIsLocationModalOpen}
@@ -270,7 +269,7 @@ const HomeHeader = () => {
                 handleAdListing={handleAdListing}
                 IsAdListingClicked={IsAdListingClicked}
                 setManageDeleteAccount={setManageDeleteAccount}
-                // Passando dados para o botão funcionar
+                // GARANTIDO: Passando dados para renderizar o botão "Logado"
                 userData={userData}
                 IsLoggedin={IsLoggedin}
               />

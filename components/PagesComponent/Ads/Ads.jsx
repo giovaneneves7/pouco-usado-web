@@ -43,7 +43,7 @@ import {
   SheetTitle,
   SheetTrigger
 } from "@/components/ui/sheet";
-import { LuFilter, SlidersHorizontal } from "lucide-react"; 
+import { LuFilter, SlidersHorizontal } from "lucide-react";
 
 const Ads = () => {
   const dispatch = useDispatch();
@@ -387,7 +387,7 @@ const Ads = () => {
   };
 
   const handleSortBy = (value) => {
-    newSearchParams.set("sort_by", value); // Ajustado para setar a chave correta da URL 'sort_by'
+    newSearchParams.set("sort_by", value); 
     window.history.pushState(null, "", `/ads?${newSearchParams.toString()}`);
   };
 
@@ -499,56 +499,56 @@ const Ads = () => {
       <div className="container mt-8 relative">
 
         <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-t mb-4 -mx-4 sm:-mx-6">
-            <div className="grid grid-cols-2 h-12 divide-x divide-gray-200">
-                {/* Lado Esquerdo: Filtros */}
-                <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
-                    <SheetTrigger asChild>
-                        <button className="flex items-center justify-center gap-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
-                            <SlidersHorizontal size={18} />
-                            <span>{t("Filtros")}</span>
-                            {activeFilterCount > 0 && (
-                                <span className="bg-primary text-white rounded-full w-5 h-5 text-[10px] flex items-center justify-center">
-                                    {activeFilterCount}
-                                </span>
-                            )}
-                        </button>
-                    </SheetTrigger>
-                    <SheetContent side="bottom" className="h-[90vh] overflow-y-auto rounded-t-[20px]">
-                        <SheetHeader className="mb-4">
-                            <SheetTitle className="text-left">{t("Filtros e Categorias")}</SheetTitle>
-                        </SheetHeader>
-                        <Filter
-                            customFields={customFields}
-                            extraDetails={extraDetails}
-                            setExtraDetails={setExtraDetails}
-                            newSearchParams={newSearchParams}
-                            country={country}
-                            state={state}
-                            city={city}
-                            area={area}
-                            onApply={() => setIsMobileFilterOpen(false)}
-                        />
-                    </SheetContent>
-                </Sheet>
+          <div className="grid grid-cols-2 h-12 divide-x divide-gray-200">
+            {/* Lado Esquerdo: Filtros */}
+            <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
+              <SheetTrigger asChild>
+                <button className="flex items-center justify-center gap-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
+                  <SlidersHorizontal size={18} />
+                  <span>{t("Filtros")}</span>
+                  {activeFilterCount > 0 && (
+                    <span className="bg-primary text-white rounded-full w-5 h-5 text-[10px] flex items-center justify-center">
+                      {activeFilterCount}
+                    </span>
+                  )}
+                </button>
+              </SheetTrigger>
+              <SheetContent side="bottom" className="h-[90vh] overflow-y-auto rounded-t-[20px]">
+                <SheetHeader className="mb-4">
+                  <SheetTitle className="text-left">{t("Filtros e Categorias")}</SheetTitle>
+                </SheetHeader>
+                <Filter
+                  customFields={customFields}
+                  extraDetails={extraDetails}
+                  setExtraDetails={setExtraDetails}
+                  newSearchParams={newSearchParams}
+                  country={country}
+                  state={state}
+                  city={city}
+                  area={area}
+                  onApply={() => setIsMobileFilterOpen(false)}
+                />
+              </SheetContent>
+            </Sheet>
 
-                <Select value={sortBy} onValueChange={handleSortBy}>
-                    <SelectTrigger className="w-full h-full border-none rounded-none shadow-none focus:ring-0 flex justify-center gap-2 text-gray-700 hover:bg-gray-50 bg-transparent px-0">
-                         <div className="flex items-center justify-center gap-2 w-full">
-                            <TbTransferVertical size={18} />
-                            <span className="text-sm font-medium">{t("Ordem")}</span> 
-                         </div>
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectGroup className="font-semibold">
-                          <SelectItem value="new-to-old">{t("Recentes")}</SelectItem>
-                          <SelectItem value="old-to-new">{t("Mais Antigos")}</SelectItem>
-                          <SelectItem value="price-high-to-low">{t("Maior Preço")}</SelectItem>
-                          <SelectItem value="price-low-to-high">{t("Menor Preço")}</SelectItem>
-                          <SelectItem value="popular_items">{t("Popular")}</SelectItem>
-                        </SelectGroup>
-                    </SelectContent>
-                </Select>
-            </div>
+            <Select value={sortBy} onValueChange={handleSortBy}>
+              <SelectTrigger className="w-full h-full border-none rounded-none shadow-none focus:ring-0 flex justify-center gap-2 text-gray-700 hover:bg-gray-50 bg-transparent px-0">
+                <div className="flex items-center justify-center gap-2 w-full">
+                  <TbTransferVertical size={18} />
+                  <span className="text-sm font-medium">{t("Ordem")}</span>
+                </div>
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup className="font-semibold">
+                  <SelectItem value="new-to-old">{t("Recentes")}</SelectItem>
+                  <SelectItem value="old-to-new">{t("Mais Antigos")}</SelectItem>
+                  <SelectItem value="price-high-to-low">{t("Maior Preço")}</SelectItem>
+                  <SelectItem value="price-low-to-high">{t("Menor Preço")}</SelectItem>
+                  <SelectItem value="popular_items">{t("Popular")}</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
 
         <div className="flex flex-col">
@@ -570,9 +570,6 @@ const Ads = () => {
             </div>
             <div className="xl:col-span-9 lg:col-span-8 col-span-1 flex flex-col gap-5">
               <div className="flex justify-between items-center">
-                {/* Ocultado no mobile (lg:block) pois agora está na barra superior 
-                   Mantido no desktop
-                */}
                 <div className="hidden lg:block">
                   <div className="flex flex-col md:flex-row  items-start md:items-center gap-2">
                     <div className="flex gap-2 items-center whitespace-nowrap">
@@ -843,7 +840,7 @@ const Ads = () => {
                       }
                       onClick={handleProdLoadMore}
                     >
-                      {advertisements.isLoadMore ? t("loading") : t("loadMore")}
+                      {advertisements.isLoadMore ? t("Carregando") : t("Carregar mais")}
                     </Button>
                   </div>
                 )}

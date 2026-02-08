@@ -126,7 +126,7 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
                     {t("ratings")}
                   </div>
                 )}
-              {productDetails?.user?.show_personal_details === 1 &&
+              {/*{productDetails?.user?.show_personal_details === 1 &&
                 productDetails?.user?.email && (
                   <Link
                     href={`mailto:${productDetails?.user?.email}`}
@@ -134,7 +134,7 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
                   >
                     {productDetails?.user?.email}
                   </Link>
-                )}
+                )}*/}
             </div>
           </div>
           <CustomLink href={`/seller/${productDetails?.user?.id}`}>

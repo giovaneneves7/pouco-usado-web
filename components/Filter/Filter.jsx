@@ -128,7 +128,7 @@ const Filter = ({
         </div>
 
         {/* 3. Bairro */}
-        <div>
+        {/*<div>
           <label className={labelStyle}>{t("Bairro") || "Bairro"}</label>
           <input
             type="text"
@@ -137,11 +137,11 @@ const Filter = ({
             value={bairro}
             onChange={(e) => setBairro(e.target.value)}
           />
-        </div>
+        </div>*/}
 
         {/* 4. Condição */}
         <div>
-          <label className={labelStyle}>{t("condition") || "Condição"}</label>
+          <label className={labelStyle}>{t("Condição") || "Condição"}</label>
           <div className="relative">
             <select
               className={selectStyle}
@@ -150,13 +150,16 @@ const Filter = ({
             >
               <option value="">Todos</option>
               <option value="new">Novo</option>
-              <option value="used">Usado</option>
+              <option value="Usado">Usado</option>
+              <option value="Seminovo">Seminovo</option>
+              <option value="Recondicionado">Recondicionado</option>
+              <option value="Não Funciona">Não Funciona</option>
             </select>
           </div>
         </div>
 
         {/* 5. Transação */}
-        <div>
+        {/*<div>
           <label className={labelStyle}>{t("Tipo") || "Transação"}</label>
           <div className="relative">
             <select
@@ -170,7 +173,7 @@ const Filter = ({
               <option value="exchange">Troca</option>
             </select>
           </div>
-        </div>
+        </div>*/}
 
         <div>
           <div className="flex justify-between items-center mb-1.5">
@@ -195,7 +198,8 @@ const Filter = ({
             />
           </div>
 
-          <div className="flex items-center gap-2 mt-2">
+          
+          {/*<div className="flex items-center gap-2 mt-2">
             <input
               type="checkbox"
               id="chk-donation"
@@ -206,7 +210,7 @@ const Filter = ({
             <label htmlFor="chk-donation" className="text-sm text-gray-600 cursor-pointer select-none font-medium">
               Apenas Doações
             </label>
-          </div>
+          </div>*/}
         </div>
 
         <div>
@@ -243,7 +247,7 @@ const Filter = ({
             />
             <span className="text-sm text-gray-600 select-none">Anúncios Premium</span>
           </label>
-          <label className="flex items-center gap-2.5 cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
+          {/*<label className="flex items-center gap-2.5 cursor-pointer hover:bg-gray-50 p-1 rounded transition-colors">
             <input
               type="checkbox"
               className="rounded border-gray-300 text-slate-800 focus:ring-0 w-4 h-4 accent-slate-800"
@@ -251,7 +255,7 @@ const Filter = ({
               onChange={(e) => setHasPhone(e.target.checked)}
             />
             <span className="text-sm text-gray-600 select-none">Tem telefone</span>
-          </label>
+          </label>*/}
         </div>
 
         <button
