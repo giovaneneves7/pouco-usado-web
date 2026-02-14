@@ -259,7 +259,6 @@ const HomeHeader = () => {
               </div>
             )}
 
-            {/* Menu Hambúrguer (Renderizado SEMPRE) */}
             <div className="flex-shrink-0 ml-2">
               <HomeMobileMenu
                 setIsLocationModalOpen={setIsLocationModalOpen}
@@ -269,7 +268,6 @@ const HomeHeader = () => {
                 handleAdListing={handleAdListing}
                 IsAdListingClicked={IsAdListingClicked}
                 setManageDeleteAccount={setManageDeleteAccount}
-                // GARANTIDO: Passando dados para renderizar o botão "Logado"
                 userData={userData}
                 IsLoggedin={IsLoggedin}
               />
@@ -278,16 +276,12 @@ const HomeHeader = () => {
         </nav>
       </header>
 
-      {IsLoggedin && (
-        <>
           {isCategoryLoading && !cateData.length ? (
             <HeaderCategoriesSkeleton />
           ) : (
             cateData &&
             cateData.length > 0 && <HeaderCategories cateData={cateData} />
           )}
-        </>
-      )}
 
       <BottomNav setIsLocationModalOpen={setIsLocationModalOpen} />
 

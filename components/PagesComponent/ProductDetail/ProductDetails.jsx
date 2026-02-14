@@ -43,6 +43,13 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
+// Importações restauradas para a lógica do dono do anúncio
+import MyAdsListingDetailCard from "./MyAdsListingDetailCard";
+import AdsStatusChangeCards from "./AdsStatusChangeCards";
+import MakeFeaturedAd from "./MakeFeaturedAd";
+import RenewAd from "./RenewAd";
+import AdEditedByAdmin from "./AdEditedByAdmin";
+
 const ProductDetails = ({ slug }) => {
   const CurrentLanguage = useSelector(CurrentLanguageData);
   const userData = useSelector(userSignUpData);
@@ -59,6 +66,16 @@ const ProductDetails = ({ slug }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [isOpenInApp, setIsOpenInApp] = useState(false);
   const [isReportModalOpen, setIsReportModalOpen] = useState(false);
+
+  // Lógica restaurada para verificar status do anúncio
+  const IsShowFeaturedAd =
+    isMyListing &&
+    !productDetails?.is_feature &&
+    productDetails?.status === "approved";
+
+  const isMyAdExpired = isMyListing && productDetails?.status === "expired";
+  const isEditedByAdmin =
+    isMyListing && productDetails?.is_edited_by_admin === 1;
 
   useEffect(() => {
     fetchProductDetails();
@@ -210,10 +227,8 @@ const ProductDetails = ({ slug }) => {
             
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-              {/* === ESQUERDA === */}
               <div className="lg:col-span-8 flex flex-col gap-8">
                 
-                {/* 1. Galeria */}
                 <div className="bg-white rounded-xl overflow-hidden border border-gray-100 shadow-sm">
                   <ProductGallery galleryImages={galleryImages} videoData={videoData} />
                 </div>
@@ -230,16 +245,22 @@ const ProductDetails = ({ slug }) => {
                        <span>ID: {productDetails?.id}</span>
                     </div>
 
-                    {/* Título Principal */}
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 leading-tight">
                         {productDetails?.translated_item?.name || productDetails?.name}
                     </h1>
 
-                    {/* Preço */}
                     <div className="text-3xl md:text-4xl font-extrabold text-gray-900 mb-6">
                         {productDetails?.price ? `R$ ${productDetails.price}` : t("priceNotMentioned")}
                     </div>
                 </div>
+
+                {/* Bloco para Destacar Anúncio (Restaurado) */}
+                {IsShowFeaturedAd && (
+                  <MakeFeaturedAd
+                    item_id={productDetails?.id}
+                    setProductDetails={setProductDetails}
+                  />
+                )}
 
                 <div className="border-t pt-6">
                    <h3 className="text-xl font-bold text-gray-800 mb-4">{t("Detalhes")}</h3>
@@ -266,7 +287,6 @@ const ProductDetails = ({ slug }) => {
                    <ProductLocation productDetails={productDetails} />
                 </div>
 
-                {/* Botões de Ação */}
                 <div className="flex flex-col sm:flex-row gap-4 mt-4 border-t pt-6">
                     <button onClick={handleShare} className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-white border border-gray-200 rounded-full hover:bg-gray-50 text-gray-600 transition-all text-sm font-medium shadow-sm">
                         <Share2 size={18} /> {t("Compartilhar")}
@@ -297,51 +317,76 @@ const ProductDetails = ({ slug }) => {
 
               </div>
 
-              {/* === DIREITA (SIDEBAR) === */}
               <div className="lg:col-span-4 space-y-6">
-                
-                {/* Removido o card de Título/Preço do Desktop pois agora está na esquerda */}
                 
                 <div className="sticky top-24 space-y-6">
                     
-                    {!isMyListing && (
-                        <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
-                           <SellerDetailCard
-                              productDetails={productDetails}
-                              setProductDetails={setProductDetails}
-                           />
-                        </div>
+                    {/* LÓGICA DE EXIBIÇÃO DA BARRA LATERAL (Restaurada) */}
+                    {isMyListing ? (
+                        <>
+                            {/* Componentes do Dono do Anúncio */}
+                            <MyAdsListingDetailCard productDetails={productDetails} />
+                            
+                            <AdsStatusChangeCards
+                                productDetails={productDetails}
+                                setProductDetails={setProductDetails}
+                                status={status}
+                                setStatus={setStatus}
+                            />
+
+                            {isEditedByAdmin && (
+                                <AdEditedByAdmin admin_edit_reason={productDetails?.admin_edit_reason} />
+                            )}
+
+                            {isMyAdExpired && (
+                                <RenewAd
+                                    item_id={productDetails?.id}
+                                    setProductDetails={setProductDetails}
+                                    currentLanguageId={CurrentLanguage?.id}
+                                    setStatus={setStatus}
+                                />
+                            )}
+                        </>
+                    ) : (
+                        <>
+                            <div className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                               <SellerDetailCard
+                                  productDetails={productDetails}
+                                  setProductDetails={setProductDetails}
+                               />
+                            </div>
+
+                            <div className="flex items-center justify-center p-4">
+                                <span className="text-xs text-gray-400 uppercase tracking-widest">Publicidade</span>
+                            </div>
+
+                            <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
+                                <h3 className="font-bold text-gray-900 mb-4 text-base">
+                                    {t("Dicas de segurança")}
+                                </h3>
+                                <ul className="space-y-4">
+                                    <li className="flex gap-3 items-start">
+                                        <ShieldCheck size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                        <span className="text-xs text-gray-600 leading-relaxed">
+                                            Nunca pague antes de conhecer o pessoalmente
+                                        </span>
+                                    </li>
+                                    <li className="flex gap-3 items-start">
+                                        <ShieldAlert size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                        <span className="text-xs text-gray-600 leading-relaxed">
+                                            Desconfie de muitas facilidades e preços muito abaixo do mercado
+                                        </span>
+                                    </li>
+                                    <li className="flex gap-3 items-start">
+                                        <ShieldCheck size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
+                                        <span className="text-xs text-gray-600 leading-relaxed">
+                                            Sempre marque encontros em lugares públicos com bastante movimentação
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </>
                     )}
-
-                    <div className="flex items-center justify-center p-4">
-                        <span className="text-xs text-gray-400 uppercase tracking-widest">Publicidade</span>
-                    </div>
-
-                    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm">
-                        <h3 className="font-bold text-gray-900 mb-4 text-base">
-                            {t("Dicas de segurança")}
-                        </h3>
-                        <ul className="space-y-4">
-                            <li className="flex gap-3 items-start">
-                                <ShieldCheck size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-xs text-gray-600 leading-relaxed">
-                                    Nunca pague antes de conhecer o pessoalmente
-                                </span>
-                            </li>
-                            <li className="flex gap-3 items-start">
-                                <ShieldAlert size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-xs text-gray-600 leading-relaxed">
-                                    Desconfie de muitas facilidades e preços muito abaixo do mercado
-                                </span>
-                            </li>
-                            <li className="flex gap-3 items-start">
-                                <ShieldCheck size={20} className="text-gray-500 mt-0.5 flex-shrink-0" />
-                                <span className="text-xs text-gray-600 leading-relaxed">
-                                    Sempre marque encontros em lugares públicos com bastante movimentação
-                                </span>
-                            </li>
-                        </ul>
-                    </div>
 
                 </div>
               </div>

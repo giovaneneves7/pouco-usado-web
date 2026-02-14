@@ -129,7 +129,7 @@ const HomeMobileMenu = ({
       <SheetTrigger asChild>
         <button
           className={`group flex items-center gap-2 border border-gray-300 rounded-full hover:shadow-md transition-all bg-white cursor-pointer ml-2 shrink-0 ${
-            IsLoggedin ? "pl-1 pr-3 py-1" : "px-3 py-1.5"
+            IsLoggedin ? "pl-1 pr-3 py-2.5" : "px-3 py-2.5"
           }`}
           onClick={(e) => {
              if (!IsLoggedin) {
@@ -163,12 +163,11 @@ const HomeMobileMenu = ({
         </button>
       </SheetTrigger>
       
-      {/* ALTERAÇÃO DE LARGURA: md:w-[25em] */}
       <SheetContent side="right" className="[&>button:first-child]:hidden] p-0 overflow-y-auto w-full sm:max-w-md md:w-[25em]">
         <SheetHeader className="p-5 border-b border-gray-100 text-left">
-          <SheetTitle className="text-3xl font-bold text-gray-800">
+          {/*<SheetTitle className="text-3xl font-bold text-gray-800">
             {t("Menu")}
-          </SheetTitle>
+          </SheetTitle>*/}
           <SheetDescription className="sr-only">Menu principal</SheetDescription>
         </SheetHeader>
 

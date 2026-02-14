@@ -4,22 +4,22 @@ import { MdVerifiedUser } from "react-icons/md";
 import { IoMdStar } from "react-icons/io";
 import { FaArrowRight, FaPaperPlane } from "react-icons/fa";
 import { IoChatboxEllipsesOutline } from "react-icons/io5";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux"; 
 import { extractYear, t } from "@/utils";
 import CustomLink from "@/components/Common/CustomLink";
 import { BiPhoneCall } from "react-icons/bi";
 import { itemOfferApi } from "@/utils/api";
 import { toast } from "sonner";
 import { userSignUpData } from "@/redux/reducer/authSlice";
-import { Gift } from "lucide-react";
 import MakeOfferModal from "./MakeOfferModal";
 import { setIsLoginOpen } from "@/redux/reducer/globalStateSlice";
 import ApplyJobModal from "./ApplyJobModal";
 import CustomImage from "@/components/Common/CustomImage";
-import Link from "next/link";
+// Removi o import do Link do next/link pois usaremos a tag <a> padrão para tel:
 import { useNavigate } from "@/components/Common/useNavigate";
 
 const SellerDetailCard = ({ productDetails, setProductDetails }) => {
+  const dispatch = useDispatch();
   const { navigate } = useNavigate();
   const userData = productDetails && productDetails?.user;
   const memberSinceYear = productDetails?.created_at
@@ -31,23 +31,33 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
   const [IsOfferModalOpen, setIsOfferModalOpen] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
 
-  const isAllowedToMakeOffer =
-    productDetails?.price > 0 &&
-    !productDetails?.is_already_offered &&
-    Number(productDetails?.category?.is_job_category) === 0 &&
-    Number(productDetails?.category?.price_optional) === 0;
   const isJobCategory = Number(productDetails?.category?.is_job_category) === 1;
   const isApplied = productDetails?.is_already_job_applied;
   const item_id = productDetails?.id;
+  
+  const mobileNumber = productDetails?.user?.mobile;
 
   const offerData = {
     itemPrice: productDetails?.price,
     itemId: productDetails?.id,
   };
 
+  const handleCall = (e) => {
+    if (!loggedInUserId) {
+      e.preventDefault();
+      dispatch(setIsLoginOpen(true));
+      return;
+    }
+
+    if (!mobileNumber) {
+      e.preventDefault();
+      toast.error(t("Telefone indisponível"));
+    }
+  };
+
   const handleChat = async () => {
     if (!loggedInUserId) {
-      setIsLoginOpen(true);
+      dispatch(setIsLoginOpen(true));
       return;
     }
     try {
@@ -63,14 +73,6 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
     } finally {
       setIsStartingChat(false);
     }
-  };
-
-  const handleMakeOffer = () => {
-    if (!loggedInUserId) {
-      setIsLoginOpen(true);
-      return;
-    }
-    setIsOfferModalOpen(true);
   };
 
   return (
@@ -126,15 +128,6 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
                     {t("ratings")}
                   </div>
                 )}
-              {/*{productDetails?.user?.show_personal_details === 1 &&
-                productDetails?.user?.email && (
-                  <Link
-                    href={`mailto:${productDetails?.user?.email}`}
-                    className="text-sm text_ellipsis"
-                  >
-                    {productDetails?.user?.email}
-                  </Link>
-                )}*/}
             </div>
           </div>
           <CustomLink href={`/seller/${productDetails?.user?.id}`}>
@@ -145,17 +138,15 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
         
         <div className="flex flex-col items-stretch gap-3 p-4 w-full">
           
-          {productDetails?.user?.show_personal_details === 1 &&
-            productDetails?.user?.mobile && (
-              <Link
-                href={`tel:${productDetails?.user?.mobile}`}
-                className="bg-[#000] text-white p-3 rounded-md flex items-center gap-2 text-base font-medium justify-center w-full hover:bg-gray-800 transition-colors"
-              >
-                <BiPhoneCall size={21} />
-                <span>{t("Ligar")}</span>
-              </Link>
-            )}
-          {/* Botão Chat (Segundo) */}
+          <a
+            href={mobileNumber ? `tel:${mobileNumber}` : "#"}
+            onClick={handleCall}
+            className="bg-[#000] text-white p-3 rounded-md flex items-center gap-2 text-base font-medium justify-center w-full hover:bg-gray-800 transition-colors cursor-pointer"
+          >
+            <BiPhoneCall size={21} />
+            <span>{t("Ligar")}</span>
+          </a>
+          
           <button
             onClick={handleChat}
             disabled={IsStartingChat}
@@ -169,7 +160,6 @@ const SellerDetailCard = ({ productDetails, setProductDetails }) => {
             )}
           </button>
 
-          {/* Outros botões (Oferta / Job) */}
           {isJobCategory && (
             <button
               className={`text-white p-3 rounded-md flex items-center gap-2 text-base font-medium justify-center w-full ${

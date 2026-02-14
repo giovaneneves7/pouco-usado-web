@@ -43,7 +43,7 @@ import {
   SheetTitle,
   SheetTrigger
 } from "@/components/ui/sheet";
-import { LuFilter, SlidersHorizontal } from "lucide-react";
+import { SlidersHorizontal } from "lucide-react";
 
 const Ads = () => {
   const dispatch = useDispatch();
@@ -496,11 +496,10 @@ const Ads = () => {
   return (
     <Layout>
       <BreadCrumb />
-      <div className="container mt-8 relative">
+      <div className="container mt-8 relative px-2 sm:px-4">
 
-        <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-t mb-4 -mx-4 sm:-mx-6">
+        <div className="lg:hidden sticky top-0 z-30 bg-white border-b border-t mb-4 -mx-2 sm:-mx-4">
           <div className="grid grid-cols-2 h-12 divide-x divide-gray-200">
-            {/* Lado Esquerdo: Filtros */}
             <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
               <SheetTrigger asChild>
                 <button className="flex items-center justify-center gap-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors">
@@ -747,7 +746,6 @@ const Ads = () => {
 
                         const fieldName = field?.translated_name || field?.name;
 
-                        // Function to get translated value
                         const getTranslatedValue = (val) => {
                           if (!field?.values || !field?.translated_value)
                             return val;
@@ -788,18 +786,15 @@ const Ads = () => {
                 )}
               </div>
 
-              <div className="grid grid-cols-12 gap-2">
+              <div className={`grid ${view === 'list' ? 'grid-cols-1' : 'grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4'} gap-2`}>
                 {advertisements?.isLoading ? (
                   Array.from({ length: 12 }).map((_, index) =>
                     view === "list" ? (
-                      <div className="col-span-12" key={index}>
+                      <div className="col-span-1" key={index}>
                         <ProductHorizontalCardSkeleton />
                       </div>
                     ) : (
-                      <div
-                        key={index}
-                        className="col-span-12 sm:col-span-6 lg:col-span-4 xl:col-span-3"
-                      >
+                      <div key={index} className="col-span-1">
                         <ProductCardSkeleton />
                       </div>
                     )
@@ -807,27 +802,25 @@ const Ads = () => {
                 ) : advertisements.data && advertisements.data.length > 0 ? (
                   advertisements.data?.map((item, index) =>
                     view === "list" ? (
-                      <div className="col-span-12" key={index}>
+                      <div className="col-span-1" key={index}>
                         <ProductHorizontalCard
                           item={item}
                           handleLike={handleLike}
                         />
                       </div>
                     ) : (
-                      <div
-                        className="col-span-6 sm:col-span-6 lg:col-span-4 xl:col-span-3"
-                        key={index}
-                      >
+                      <div className="col-span-1" key={index}>
                         <ProductCard item={item} handleLike={handleLike} />
                       </div>
                     )
                   )
                 ) : (
-                  <div className="col-span-12">
+                  <div className="col-span-full">
                     <NoData name={t("ads")} />
                   </div>
                 )}
               </div>
+              
               {advertisements.data &&
                 advertisements.data.length > 0 &&
                 advertisements.hasMore && (
