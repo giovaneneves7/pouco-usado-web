@@ -75,7 +75,8 @@ const Home = () => {
   }, [cityData.lat, cityData.long, KmRange, currentLanguageCode]);
   return (
     <>
-    <div className="container mx-auto px-4 sm:px-6 lg:px-8 max-w-[1280px]">
+    {/* A ÚNICA MUDANÇA FOI NESTA LINHA ABAIXO: troquei px-4 por px-3 */}
+    <div className="container mx-auto px-3 sm:px-6 lg:px-8 max-w-[1280px]">
       {IsSliderLoading ? (
         <OfferSliderSkeleton />
       ) : (

@@ -215,62 +215,67 @@ const HomeHeader = () => {
               </div>
             </div>
 
-            {isLargeScreen && (
-              <div className="hidden lg:flex items-center gap-3 xl:gap-5 flex-shrink-0">
-                <div className="flex items-center gap-4 text-gray-600">
-                  <button
-                    title="Favoritos"
-                    onClick={() => handleProtectedAction(() => navigate('/favorites'))}
-                    className="hover:text-primary transition"
-                  >
-                    <FiHeart size={20} />
-                  </button>
+            {/* AQUI ESTÁ A CORREÇÃO: Os botões foram colocados dentro de uma mesma div para colarem um no outro */}
+            <div className="flex items-center gap-2 lg:gap-3 flex-shrink-0">
+              
+              {isLargeScreen && (
+                <div className="hidden lg:flex items-center gap-3 xl:gap-5 flex-shrink-0">
+                  <div className="flex items-center gap-4 text-gray-600">
+                    <button
+                      title="Favoritos"
+                      onClick={() => handleProtectedAction(() => navigate('/favorites'))}
+                      className="hover:text-primary transition"
+                    >
+                      <FiHeart size={20} />
+                    </button>
+
+                    <button
+                      title="Chat"
+                      onClick={() => handleProtectedAction(() => navigate('/chat'))}
+                      className="hover:text-primary transition"
+                    >
+                      <FiMessageSquare size={20} />
+                    </button>
+
+                    <button
+                      onClick={() => setIsLocationModalOpen(true)}
+                      title={locationText ? locationText : t("addLocation")}
+                      className="hover:text-primary transition"
+                    >
+                      <FiTarget size={22} />
+                    </button>
+                  </div>
 
                   <button
-                    title="Chat"
-                    onClick={() => handleProtectedAction(() => navigate('/chat'))}
-                    className="hover:text-primary transition"
+                    className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full flex items-center gap-2 font-medium transition-colors shadow-sm whitespace-nowrap"
+                    disabled={IsAdListingClicked}
+                    onClick={handleAdListing}
                   >
-                    <FiMessageSquare size={20} />
-                  </button>
-
-                  <button
-                    onClick={() => setIsLocationModalOpen(true)}
-                    title={locationText ? locationText : t("addLocation")}
-                    className="hover:text-primary transition"
-                  >
-                    <FiTarget size={22} />
+                    {IsAdListingClicked ? (
+                      <Loader2 size={18} className="animate-spin" />
+                    ) : (
+                      <IoIosAddCircleOutline size={20} />
+                    )}
+                    <span className="hidden xl:inline">Anunciar grátis</span>
+                    <span className="xl:hidden">Anunciar</span>
                   </button>
                 </div>
+              )}
 
-                <button
-                  className="bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-full flex items-center gap-2 font-medium transition-colors shadow-sm whitespace-nowrap"
-                  disabled={IsAdListingClicked}
-                  onClick={handleAdListing}
-                >
-                  {IsAdListingClicked ? (
-                    <Loader2 size={18} className="animate-spin" />
-                  ) : (
-                    <IoIosAddCircleOutline size={20} />
-                  )}
-                  <span className="hidden xl:inline">Anunciar grátis</span>
-                  <span className="xl:hidden">Anunciar</span>
-                </button>
+              <div className="flex-shrink-0">
+                <HomeMobileMenu
+                  setIsLocationModalOpen={setIsLocationModalOpen}
+                  setIsRegisterModalOpen={setIsRegisterModalOpen}
+                  setIsLogout={setIsLogout}
+                  locationText={locationText}
+                  handleAdListing={handleAdListing}
+                  IsAdListingClicked={IsAdListingClicked}
+                  setManageDeleteAccount={setManageDeleteAccount}
+                  userData={userData}
+                  IsLoggedin={IsLoggedin}
+                />
               </div>
-            )}
 
-            <div className="flex-shrink-0 ml-2">
-              <HomeMobileMenu
-                setIsLocationModalOpen={setIsLocationModalOpen}
-                setIsRegisterModalOpen={setIsRegisterModalOpen}
-                setIsLogout={setIsLogout}
-                locationText={locationText}
-                handleAdListing={handleAdListing}
-                IsAdListingClicked={IsAdListingClicked}
-                setManageDeleteAccount={setManageDeleteAccount}
-                userData={userData}
-                IsLoggedin={IsLoggedin}
-              />
             </div>
           </div>
         </nav>

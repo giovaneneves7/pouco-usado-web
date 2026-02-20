@@ -115,7 +115,8 @@ const AllItems = ({ cityData, KmRange }) => {
   };
 
   return (
-    <section className="container mt-12">
+    /* AQUI ESTAVA 'container mt-12'. REMOVI O 'container' PARA TIRAR O ESPAÇO DUPLO */
+    <section className="mt-12">
       <h5 className="text-xl sm:text-2xl font-medium">{t("Todos os Classificados")}</h5>
 
       {/* Location Alert - shows when items are from different location */}

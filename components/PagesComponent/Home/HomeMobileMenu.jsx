@@ -7,7 +7,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { t, truncate } from "@/utils"; // Adicionei truncate que faltava na importação
+import { t } from "@/utils";
 import { useState } from "react";
 import { GiHamburgerMenu } from "react-icons/gi";
 import { GrLocation } from "react-icons/gr";
@@ -78,7 +78,6 @@ const HomeMobileMenu = ({
     }));
   };
 
-  // Links do usuário
   const navItems = (
     <div className="flex flex-col px-4 pb-4">
       <CustomLink href="/notifications" className="flex items-center gap-1 py-4">
@@ -128,9 +127,8 @@ const HomeMobileMenu = ({
     <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <button
-          className={`group flex items-center gap-2 border border-gray-300 rounded-full hover:shadow-md transition-all bg-white cursor-pointer ml-2 shrink-0 ${
-            IsLoggedin ? "pl-1 pr-3 py-2.5" : "px-3 py-2.5"
-          }`}
+          // AQUI: h-[40px] para alinhar milimetricamente na vertical, e md:ml-0 para encostar no botão laranja
+          className="flex items-center h-[40px] gap-1.5 md:gap-2 border border-gray-300 rounded-full hover:shadow-md transition-all bg-white cursor-pointer shrink-0 p-1 md:px-3 ml-2 md:ml-0"
           onClick={(e) => {
              if (!IsLoggedin) {
                  e.preventDefault();
@@ -140,34 +138,32 @@ const HomeMobileMenu = ({
         >
           {IsLoggedin && userData ? (
             <>
-              <div className="relative">
-                <CustomImage 
-                    src={userData.profile} 
-                    alt={userData.name}
-                    width={32}
-                    height={32}
-                    className="w-8 h-8 rounded-full object-cover border border-gray-100" 
-                />
-              </div>
-              <span className="text-sm font-semibold text-gray-700 max-w-[100px] truncate hidden sm:block">
-                {truncate(userData.name, 12)}
+              <CustomImage 
+                  src={userData.profile} 
+                  alt={userData.name}
+                  width={28}
+                  height={28}
+                  className="w-7 h-7 rounded-full object-cover shrink-0" 
+              />
+              <span className="hidden md:block text-sm font-medium text-gray-700 truncate max-w-[120px]">
+                  {userData.name}
               </span>
-              <FaAngleDown className="text-gray-400 group-hover:text-gray-600 transition-colors" size={12} />
+              <FaAngleDown className="text-gray-500 shrink-0 mr-1 md:mr-0" size={14} />
             </>
           ) : (
             <>
-                <GiHamburgerMenu size={18} className="text-gray-600" />
-                <UserCircle size={24} className="text-gray-500" />
+              <GiHamburgerMenu size={18} className="text-gray-600 shrink-0 ml-1 md:ml-0" />
+              <UserCircle size={28} className="text-gray-500 shrink-0" strokeWidth={1.5} />
             </>
           )}
         </button>
       </SheetTrigger>
       
-      <SheetContent side="right" className="[&>button:first-child]:hidden] p-0 overflow-y-auto w-full sm:max-w-md md:w-[25em]">
+      <SheetContent side="right" className="[&>button:first-child]:hidden p-0 overflow-y-auto w-full sm:max-w-md md:w-[25em]">
         <SheetHeader className="p-5 border-b border-gray-100 text-left">
-          {/*<SheetTitle className="text-3xl font-bold text-gray-800">
+          <SheetTitle className="text-3xl font-bold text-gray-800">
             {t("Menu")}
-          </SheetTitle>*/}
+          </SheetTitle>
           <SheetDescription className="sr-only">Menu principal</SheetDescription>
         </SheetHeader>
 
@@ -194,7 +190,7 @@ const HomeMobileMenu = ({
             ) : (
               <div className="flex items-center gap-3">
                 <div className="w-14 h-14 bg-gray-100 rounded-full flex items-center justify-center text-gray-400">
-                    <GiHamburgerMenu size={24} />
+                    <UserCircle size={32} strokeWidth={1.5} />
                 </div>
                 <div className="flex flex-col">
                     <p className="font-bold text-lg text-gray-900">{t("Bem-vindo")}</p>
